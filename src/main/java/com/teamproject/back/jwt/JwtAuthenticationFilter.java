@@ -31,10 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = resolveToken(request);
 //        String token = findJwtToken(request);
         //토큰 유효 및 만료 기간 검증
-        if(token != null && jwtTokenProvider.isValid(token)){
+        if(token != null && jwtTokenProvider.isValid(token)) {
             this.setAuthentication(token);
         }
-
         log.info("token : {}", token);
 //        doFilter(request, response, filterChain);
         filterChain.doFilter(request, response);

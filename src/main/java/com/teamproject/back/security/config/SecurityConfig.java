@@ -39,7 +39,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/api/auth/**"),
-                                new AntPathRequestMatcher("/signup")
+                                new AntPathRequestMatcher("/signup"),
+                                new AntPathRequestMatcher("/api/home"),
+                                new AntPathRequestMatcher("/ws/chat/**")
                         ).permitAll()
                         .requestMatchers("/security/user").hasRole("USER")
                         .requestMatchers("/security/admin").hasRole("ADMIN")

@@ -15,7 +15,7 @@ public class TestController {
     public ResponseEntity<String> user(){
 //        SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("name : {}", SecurityContextHolder.getContext().getAuthentication().getName());
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @GetMapping("/security/admin")

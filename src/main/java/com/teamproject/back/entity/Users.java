@@ -52,6 +52,9 @@ public class Users {
     @OneToMany(mappedBy = "users")
     private List<Cart> carts;
 
+    @OneToMany(mappedBy = "users")
+    private List<Chats> chats;
+
 
     @PrePersist
     public void prePersist() {
