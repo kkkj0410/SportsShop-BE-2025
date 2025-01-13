@@ -34,7 +34,7 @@ public class JwtTokenProvider {
     @Value("${jwt.key}")
     private String KEY;
     private SecretKey SECRET_KEY;
-    private final long ACCESS_EXPIRE_TIME = 1000 * 60 * 30L;
+    private final long ACCESS_EXPIRE_TIME = 1000 * 60 * 12 * 30L;
     private final long REFRESH_EXPIRE_TIME = 1000 * 60 * 60L * 24 * 7;
     private final String KEY_ROLE = "role";
     private final String HEADER_TYPE = "typ";
@@ -52,8 +52,8 @@ public class JwtTokenProvider {
         SECRET_KEY = Keys.hmacShaKeyFor(KEY.getBytes());
     }
 
-    public Cookie createJwtCookie(String username, Role role){
-        String jwtToken = createToken(username, role);
+    public Cookie createJwtCookie(String email, Role role){
+        String jwtToken = createToken(email, role);
         Cookie cookie = new Cookie(JWT_COOKIE_NAME, jwtToken);
         cookie.setHttpOnly(false);  // 클라이언트에서 JavaScript로 접근 불가
 //        cookie.setSecure(true);    // HTTPS에서만 전송
@@ -63,11 +63,7 @@ public class JwtTokenProvider {
         return cookie;
     }
 
-    // *****(1.11)*******
-    // username -> email
-    // username = 구분 id
-    // 따라서, email  사용 필요
-    public String createToken(String username, Role role) {
+    public String createToken(String email, Role role) {
         Date beginDate = new Date();
         Date endDate = new Date(beginDate.getTime() + ACCESS_EXPIRE_TIME);
 
@@ -75,7 +71,7 @@ public class JwtTokenProvider {
                 .header()
                 .add(HEADER_TYPE, HEADER_JWT_TYPE)
                 .and()
-                .subject(username)
+                .subject(email)
                 .claim(KEY_ROLE, "ROLE_"+role)
                 .issuedAt(beginDate)
                 .expiration(endDate)

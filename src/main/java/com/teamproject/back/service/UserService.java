@@ -6,6 +6,7 @@ import com.teamproject.back.entity.Users;
 import com.teamproject.back.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class UserService {
-
-
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -48,6 +47,15 @@ public class UserService {
         }
 
         return usersToUserDto(users);
+    }
+
+    public int patchUser(UserDto userDto){
+        return userRepository.patchUser(userDtoToUser(userDto));
+    }
+
+    public int patchPassword(String password){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.patchPassword(email, passwordEncoder.encode(password));
     }
 
     private UserDto usersToUserDto(Users users){
