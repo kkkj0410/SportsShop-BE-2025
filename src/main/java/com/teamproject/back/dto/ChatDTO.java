@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ChatDTO {
     private Long messageId;       // 메시지 ID
-    private String userId;          // 사용자 ID
-    private String username;      // 사용자 이름 (닉네임)
+    private String username;        // 사용자 ID
     private String message;       // 메시지 내용
     private boolean isFromAdmin;  // 관리자 발신 여부
     private LocalDateTime sentAt; // 메시지 전송 시간
+    private boolean readCheck;
 }

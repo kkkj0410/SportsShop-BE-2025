@@ -29,4 +29,7 @@ public class Chats {
 
     @Column(name = "send_at" ,nullable = false)
     private LocalDateTime sendAt;
+
+    @Column(name = "read_check")
+    private boolean readCheck;
 }
