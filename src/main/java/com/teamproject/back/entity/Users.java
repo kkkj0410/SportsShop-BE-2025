@@ -55,6 +55,12 @@ public class Users {
     @OneToMany(mappedBy = "users")
     private List<Chats> chats;
 
+    @OneToMany(mappedBy = "sender")
+    private List<Chats> sentChats; // 사용자가 보낸 메시지 목록
+
+    @OneToMany(mappedBy = "recipient")
+    private List<Chats> receivedChats; // 사용자가 받은 메시지 목록
+
 
     @PrePersist
     public void prePersist() {

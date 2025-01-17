@@ -22,9 +22,10 @@ public class ChatService {
 
 
     public Chats dtoToEntity(ChatDTO chatDTO) {
-        Users users = userRepository.findByEmail(chatDTO.getUsername());
+        Users sender = userRepository.findByEmail(chatDTO.getUsername());
         Chats chats = new Chats();
-        chats.setUsers(users);
+        chats.setSender(sender);
+        chats.setRecipient();
         chats.setMessage(chatDTO.getMessage());
         chats.setFromAdmin(chatDTO.isFromAdmin());
         chats.setSendAt(chatDTO.getSentAt());
@@ -35,5 +36,8 @@ public class ChatService {
 
     public List<String> findByAllChatList() {
         return chatRepository.findByAllChatList();
+    }
+
+    public List<ChatDTO> getRecentMessages(String decodeUserName, int i) {
     }
 }

@@ -28,20 +28,28 @@ public class ChatController {
     @MessageMapping("/chat/{decodeUserName}") // 채팅 보내는 경로 사용자의 대한것
     public void sendMessage(@DestinationVariable String decodeUserName, ChatDTO chatDTO) {
         String sender = SecurityContextHolder.getContext().getAuthentication().getName();
-        log.info("받는 사람: {}", decodeUserName);
-        log.info("보내는 사람: {}", sender);
-        String roles = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-        log.info("회원 정보 {}",roles);
-        chatDTO.setUsername(sender); // 발신자 설정
+        String roles = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().trim().replace("[", "").replace("]", "");;
+        List<ChatDTO> previousMessages = chatService.getRecentMessages(decodeUserName, 10);
+        //
+        if(roles.equals("ROLE_ADMIN")) {
+            //ADMIN 일 경우
+            chatDTO.setFromAdmin(true);
+            chatDTO.setSender(sender);
+            chatDTO.setRecipient(decodeUserName);
+        }else{
+            //USER 일 경우
+            chatDTO.setFromAdmin(false);
+            chatDTO.setRecipient(null);
+            chatDTO.setSender(sender);
+        }
+        //
+        chatDTO.setSender(sender); // 발신자 설정
         chatDTO.setSentAt(LocalDateTime.now()); // 메시지 전송 시간 설정
-        chatDTO.setFromAdmin(roles.equals("ROLE_ADMIN")); // 발신자가 관리자일 경우 true
-        chatDTO.setReadCheck(false);
-        log.info("보낼 메시지: {}", chatDTO);
+        chatDTO.setReadCheck(false); // default로 false
         chatService.saveChat(chatDTO); // 서비스 로직
-        // 수신자 채팅 구독 경로로 메시지 전송
         messagingTemplate.convertAndSend("/sub/chat/" + decodeUserName, chatDTO);
     }
-    //admin
+    //admin이 사용자가 보낸 메세지 방들을 출력하는 로직
     @GetMapping("/api/admin/chatlist")
     public ResponseEntity<List<String>> getChatList() {
         List<String> list = chatService.findByAllChatList();
