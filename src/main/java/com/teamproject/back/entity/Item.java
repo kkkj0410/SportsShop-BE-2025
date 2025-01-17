@@ -1,15 +1,19 @@
 package com.teamproject.back.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 @Data
 @Table(name = "item")
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Item {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String itemName;
@@ -36,4 +40,5 @@ public class Item {
 
     @OneToMany(mappedBy = "item")
     private List<Cart> carts;
+
 }

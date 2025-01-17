@@ -55,7 +55,7 @@ public class AuthController {
         if(authService.validatePassword(userDto.getPassword())){
             return ResponseEntity.ok("맞는 패스워드입니다");
         }
-        return ResponseEntity.ok("옳지않은 패스워드입니다");
+        return ResponseEntity.badRequest().body("옳지않은 패스워드입니다");
 
     }
 

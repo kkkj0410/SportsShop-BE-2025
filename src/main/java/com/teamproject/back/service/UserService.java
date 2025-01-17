@@ -32,12 +32,12 @@ public class UserService {
         log.info("userDto : {}", userDto);
         userDto.setRole(Role.USER);
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        Users users = userDtoToUser(userDto);
 
-        userRepository.save(users);
+        Users users = userRepository.save(userDtoToUser(userDto));
         log.info("Save User : {}", users);
         return true;
     }
+
 
     public UserDto findByUser(String email){
         Users users = userRepository.findByEmail(email);

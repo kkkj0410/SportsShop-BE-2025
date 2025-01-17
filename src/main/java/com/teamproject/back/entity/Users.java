@@ -39,7 +39,6 @@ public class Users {
     @Column(name = "delete_date")
     private LocalDateTime deleteDate;
 
-
     @OneToMany(mappedBy = "users")
     private List<Order> orders;
 

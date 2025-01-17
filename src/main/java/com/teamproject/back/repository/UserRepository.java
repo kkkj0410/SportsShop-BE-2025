@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
+
 @Repository
 public class UserRepository{
 
@@ -18,9 +19,11 @@ public class UserRepository{
     private EntityManager entityManager;
 
     @Transactional
-    public void save(Users users){
+    public Users save(Users users){
         entityManager.persist(users);
         entityManager.flush();
+
+        return users;
     }
 
 

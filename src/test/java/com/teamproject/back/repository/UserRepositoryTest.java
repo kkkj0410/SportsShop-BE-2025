@@ -135,7 +135,7 @@ class UserRepositoryTest {
 
         //then
         Users findUser = userRepository.findByEmail(user.getEmail());
-        assertNotEquals(findUser.getPassword(), updatedPassword);
+        assertEquals(findUser.getPassword(), updatedPassword);
     }
 
     @Test

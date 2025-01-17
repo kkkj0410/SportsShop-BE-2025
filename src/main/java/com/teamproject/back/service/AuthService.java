@@ -21,7 +21,7 @@ public class AuthService {
     }
 
     public UserDto login(String email, String inputPassword){
-        UserDto userDto = findByUser(email);
+        UserDto userDto = this.findByUser(email);
 
         if(userDto != null && this.validatePassword(inputPassword, userDto.getPassword())){
             return userDto;
@@ -34,7 +34,6 @@ public class AuthService {
         if(user != null){
             return usersToUserDto(user);
         }
-
         return null;
     }
 
@@ -48,13 +47,6 @@ public class AuthService {
         return passwordEncoder.matches(rawPassword, this.findByUser(email).getPassword());
     }
 
-
-//    // 비밀번호 검증
-//    public boolean validatePassword(String inputPassword, String email) {
-//        UserDto userDto = this.findByUser(email);
-//
-//        return passwordEncoder.matches(inputPassword, userDto.getPassword());
-//    }
 
     private UserDto usersToUserDto(Users users){
         return UserDto.builder()
