@@ -29,7 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = resolveToken(request);
-//        String token = findJwtToken(request);
         //토큰 유효 및 만료 기간 검증
         if(token != null && jwtTokenProvider.isValid(token)) {
             this.setAuthentication(token);
@@ -52,16 +51,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    private String findJwtToken(HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-
-            return Arrays.stream(cookies)
-                    .filter(cookie -> jwtTokenProvider.getJWT_COOKIE_NAME().equals(cookie.getName()))
-                    .map(Cookie::getValue)
-                    .findFirst()
-                    .orElse(null);
-        }
-        return null;
-    }
 }

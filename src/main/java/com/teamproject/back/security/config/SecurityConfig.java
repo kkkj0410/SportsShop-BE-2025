@@ -1,7 +1,6 @@
 package com.teamproject.back.security.config;
 
 import com.teamproject.back.jwt.JwtAuthenticationFilter;
-import com.teamproject.back.security.handler.CustomUserDetailsSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,14 +17,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final CustomUserDetailsSuccessHandler customUserDetailsSuccessHandler;
 
 
     @Autowired
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-                          CustomUserDetailsSuccessHandler customUserDetailsSuccessHandler){
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter){
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.customUserDetailsSuccessHandler = customUserDetailsSuccessHandler;
 
     }
 
@@ -35,27 +31,29 @@ public class SecurityConfig {
                 .cors(cors -> cors
                         .configurationSource(CorsConfig.corsConfigurationSource())) // CORS 허용
                 .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
                                 new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/api/auth/**"),
+<<<<<<< HEAD
                                 new AntPathRequestMatcher("/signup"),
                                 new AntPathRequestMatcher("/api/home"),
                                 new AntPathRequestMatcher("/ws/chat/**")
+=======
+                                new AntPathRequestMatcher("/api/signup"),
+                                new AntPathRequestMatcher("/image"),
+                                new AntPathRequestMatcher("/api/category")
+>>>>>>> origin/choeyoungju
                         ).permitAll()
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/api/**")
+                        ).hasRole("USER")
                         .requestMatchers("/security/user").hasRole("USER")
                         .requestMatchers("/security/admin").hasRole("ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-//                .formLogin(form -> form
-//                        .loginPage("/login")
-//                        .defaultSuccessUrl("/", true)
-//                        .failureUrl("/login?error=true")
-//                        .usernameParameter("email")
-//                        .successHandler(customUserDetailsSuccessHandler)
-//                        .permitAll()
-//                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

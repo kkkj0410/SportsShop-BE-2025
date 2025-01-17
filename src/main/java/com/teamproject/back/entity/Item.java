@@ -1,16 +1,23 @@
 package com.teamproject.back.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
+
 @Data
 @Table(name = "item")
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Item {
+
     @Id
-    @GeneratedValue
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    //****(1.17)******
+    // int id -> Integer id
 
     private String itemName;
 
@@ -22,7 +29,9 @@ public class Item {
 
     private int itemStock;
 
-    private int itemPrice;
+    //***(1.17) itemPrice -> itemSale
+    private int itemSale;
+
 
     private int itemOriginPrice;
 
@@ -36,4 +45,5 @@ public class Item {
 
     @OneToMany(mappedBy = "item")
     private List<Cart> carts;
+
 }
