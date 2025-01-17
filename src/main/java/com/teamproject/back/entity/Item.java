@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+
 @Data
 @Table(name = "item")
 @Entity
@@ -14,7 +15,9 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
+    //****(1.17)******
+    // int id -> Integer id
 
     private String itemName;
 
@@ -26,7 +29,9 @@ public class Item {
 
     private int itemStock;
 
-    private int itemPrice;
+    //***(1.17) itemPrice -> itemSale
+    private int itemSale;
+
 
     private int itemOriginPrice;
 
