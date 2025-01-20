@@ -17,13 +17,11 @@ public class Chats {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "send_id", nullable = false)
-    private Users sender; // 메시지를 보낸 사용자
+    private String roomName; //암호화작업할거다
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipient_id")
-    private Users recipient; // 메시지를 보낸 사용자
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "users_id", nullable = false)
+    private Users users; // 메시지를 보낸 사용자
 
     @Column(nullable = false)
     private boolean isFromAdmin; // 메시지 발신자 (true: 관리자, false: 사용자)

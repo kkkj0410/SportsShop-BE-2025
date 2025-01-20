@@ -30,6 +30,8 @@ public class HomeController {
     public ResponseEntity<String>homeController(){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("name:{}",username);
+        log.info("Authoriztion:{}",SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+        String roel = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
         return ResponseEntity.ok("username: " + username);
     }
     @GetMapping("/api/admin/home")
@@ -38,9 +40,15 @@ public class HomeController {
         UserDto userDto = userService.findByUser(username);
         return ResponseEntity.ok(userDto); // 로그인 성공
     }
-    @GetMapping("/api/admin/item/find")
-    public ResponseEntity<List<ItemDTO>> adminItemFindController(){
-        List<ItemDTO> items = itemService.findAllItem();
-        return ResponseEntity.ok(items); //전체 상품이니까
+    @GetMapping("/api/header")
+    public ResponseEntity<String> getHeaderController(){
+        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        return ResponseEntity.ok(role);
     }
+//    @GetMapping("/api/admin/item/find")
+//    public ResponseEntity<List<ItemDTO>> adminItemFindController(){
+//        List<ItemDTO> items = itemService.findAllItem();
+//        return Res
+//        ponseEntity.ok(items); //전체 상품이니까
+//    }
 }

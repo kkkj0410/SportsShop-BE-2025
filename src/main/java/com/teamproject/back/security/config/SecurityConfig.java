@@ -20,7 +20,7 @@ public class SecurityConfig {
 
 
     @Autowired
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter){
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 
     }
@@ -36,22 +36,19 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/api/auth/**"),
-<<<<<<< HEAD
                                 new AntPathRequestMatcher("/signup"),
-                                new AntPathRequestMatcher("/api/home"),
-                                new AntPathRequestMatcher("/ws/chat/**")
-=======
+                                new AntPathRequestMatcher("/ws/chat/**"),
                                 new AntPathRequestMatcher("/api/signup"),
                                 new AntPathRequestMatcher("/image"),
-                                new AntPathRequestMatcher("/api/category")
->>>>>>> origin/choeyoungju
+                                new AntPathRequestMatcher("/api/category"),
+                                new AntPathRequestMatcher("/api/header"),
+                                new AntPathRequestMatcher("/api/chat/**")
+
                         ).permitAll()
-                        .requestMatchers(
-                                new AntPathRequestMatcher("/api/**")
-                        ).hasRole("USER")
                         .requestMatchers("/security/user").hasRole("USER")
                         .requestMatchers("/security/admin").hasRole("ADMIN")
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/chatlist").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/home").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

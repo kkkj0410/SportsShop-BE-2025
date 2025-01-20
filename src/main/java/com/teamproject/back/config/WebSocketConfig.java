@@ -39,4 +39,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // WebSocket 연결 시 JwtChannelInterceptor 적용 ** 중요
         registration.interceptors(jwtChannelInterceptor);
     }
+
 }
