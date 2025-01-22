@@ -6,9 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 
-import com.teamproject.back.entity.*;
 import jakarta.persistence.*;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -103,4 +101,30 @@ public class ItemRepository {
         return null;
     }
 
+    public List<Item> searchItemList(int page, int size, String itemName) {
+        if (page < 1) {
+            page = 1;
+        }
+
+        return em.createQuery("SELECT I FROM Item I WHERE I.itemName LIKE :itemName order by I.itemName desc", Item.class)
+                .setParameter("itemName", "%" + itemName + "%")
+                .setFirstResult((page - 1) * size)
+                .setMaxResults(size)
+                .getResultList();
+    }
+
+    public List<Item> findByAllItem(int page, int size) {
+        if(page < 1){
+            page = 1;
+        }
+        return em.createQuery("SELECT I FROM Item I")
+                .setFirstResult((page-1) * size)
+                .setMaxResults(size)
+                .getResultList();
+    }
+
+    public int itemCount() {
+        return em.createQuery("SELECT count(I) FROM Item I",Long.class).
+                getSingleResult().intValue();
+    }
 }

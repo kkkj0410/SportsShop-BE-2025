@@ -26,4 +26,6 @@ public class ItemDTO {
     private int itemOriginPrice;
 
     private String itemBrand;
+
+    private int totalData;
 }

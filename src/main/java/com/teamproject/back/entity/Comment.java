@@ -1,6 +1,7 @@
 package com.teamproject.back.entity;
 
 import jakarta.persistence.*;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
