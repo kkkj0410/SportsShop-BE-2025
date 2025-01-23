@@ -29,8 +29,6 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    //수정(1.9)
-    //LocalDateTime -> LocalDate
     private LocalDate birthday;
 
     @Column(name = "enroll_date", nullable = false, updatable = false)
@@ -42,7 +40,7 @@ public class Users {
     @OneToMany(mappedBy = "users")
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "users")
@@ -51,14 +49,18 @@ public class Users {
     @OneToMany(mappedBy = "users")
     private List<Cart> carts;
 
-    @OneToMany(mappedBy = "users")
-    private List<Chats> chats;
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    private List<Likes> likes;
 
-    @OneToMany(mappedBy = "sender")
-    private List<Chats> sentChats; // 사용자가 보낸 메시지 목록
 
-    @OneToMany(mappedBy = "recipient")
-    private List<Chats> receivedChats; // 사용자가 받은 메시지 목록
+//    @OneToMany(mappedBy = "users")
+//    private List<Chats> chats;
+//
+//    @OneToMany(mappedBy = "sender")
+//    private List<Chats> sentChats; // 사용자가 보낸 메시지 목록
+//
+//    @OneToMany(mappedBy = "recipient")
+//    private List<Chats> receivedChats; // 사용자가 받은 메시지 목록
 
 
     @PrePersist
@@ -71,4 +73,6 @@ public class Users {
     public void deleteUser() {
         this.deleteDate = LocalDateTime.now();
     }
+
+
 }

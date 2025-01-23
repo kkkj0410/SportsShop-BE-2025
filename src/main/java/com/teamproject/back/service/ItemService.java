@@ -4,6 +4,7 @@ import com.teamproject.back.dto.ItemDTO;
 import com.teamproject.back.dto.ItemFormRequestDto;
 import com.teamproject.back.dto.ItemFormResponseDto;
 import com.teamproject.back.entity.Item;
+import com.teamproject.back.repository.CommentRepository;
 import com.teamproject.back.repository.ItemRepository;
 import com.teamproject.back.util.GcsImage;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +22,15 @@ import java.util.stream.Collectors;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final CommentRepository commentRepository;
+
+
     private final GcsImage gcsImage;
 
     @Autowired
-    public ItemService(ItemRepository itemRepository, GcsImage gcsImage) {
+    public ItemService(ItemRepository itemRepository, CommentRepository commentRepository, GcsImage gcsImage) {
         this.itemRepository = itemRepository;
+        this.commentRepository = commentRepository;
         this.gcsImage = gcsImage;
     }
 
@@ -101,13 +106,18 @@ public class ItemService {
 
 
     private ItemFormResponseDto itemToItemFormResponseDto(Item item){
+        Integer averageRating = commentRepository.findAverageRating(item.getId());
+        if(averageRating == null){
+            log.info("평점 평균 집계 실패");
+        }
+
         if(item != null){
             return ItemFormResponseDto.builder()
                     .id(item.getId())
                     .itemName(item.getItemName())
                     .itemDesc(item.getItemDesc())
                     .itemImg(item.getItemImg())
-                    .itemRating(item.getItemRating())
+                    .averageRating(averageRating)
                     .itemStock(item.getItemStock())
                     .itemOriginPrice(item.getItemOriginPrice())
                     .itemBrand(item.getItemBrand())

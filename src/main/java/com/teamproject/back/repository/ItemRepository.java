@@ -3,6 +3,7 @@ package com.teamproject.back.repository;
 import com.teamproject.back.entity.Item;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 
@@ -16,16 +17,15 @@ import java.util.List;
 @Repository
 public class ItemRepository {
 
-    @PersistenceContext
-    private EntityManager em;
-
-    public List<Item> findAllItem(){
-        return em.createQuery("select i from Item i", Item.class).getResultList();
-    }
-
 
     @PersistenceContext
     private EntityManager entityManager;
+
+
+    @Transactional(readOnly = true)
+    public List<Item> findAllItem(){
+        return entityManager.createQuery("select i from Item i", Item.class).getResultList();
+    }
 
     @Transactional
     public Item save(Item item){

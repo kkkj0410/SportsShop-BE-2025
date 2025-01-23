@@ -20,7 +20,7 @@ public class ItemFormResponseDto {
     //이미지 URL
     private String itemImg;
 
-    private String itemRating;
+    private Integer averageRating;
 
     private int itemStock;
 

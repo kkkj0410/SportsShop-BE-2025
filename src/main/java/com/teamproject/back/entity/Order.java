@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-@Table
+//***1.20 변경***
+//order -> orders
+//order는 SQL 예약어라 안됨
+@Table(name = "orders")
 @Entity
 public class Order {
     @Id

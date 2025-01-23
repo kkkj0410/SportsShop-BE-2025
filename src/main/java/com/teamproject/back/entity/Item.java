@@ -25,13 +25,9 @@ public class Item {
 
     private String itemImg;
 
-    private String itemRating;
-
     private int itemStock;
 
-    //***(1.17) itemPrice -> itemSale
     private int itemSale;
-
 
     private int itemOriginPrice;
 
@@ -40,10 +36,17 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Cart> carts;
 
+    //***1.20 추가***
+    @OneToMany(mappedBy = "item",fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
+
+    @Transient // 이 필드는 DB에 저장되지 않음
+    private Integer averageRating;
 }

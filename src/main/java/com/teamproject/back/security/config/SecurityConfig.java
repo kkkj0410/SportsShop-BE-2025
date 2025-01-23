@@ -4,6 +4,7 @@ import com.teamproject.back.jwt.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -14,6 +15,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
+@Profile("!local")
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -36,19 +38,13 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/api/auth/**"),
-<<<<<<< HEAD
                                 new AntPathRequestMatcher("/signup"),
                                 new AntPathRequestMatcher("/api/home"),
-                                new AntPathRequestMatcher("/ws/chat/**")
-=======
+                                new AntPathRequestMatcher("/ws/chat/**"),
                                 new AntPathRequestMatcher("/api/signup"),
                                 new AntPathRequestMatcher("/image"),
                                 new AntPathRequestMatcher("/api/category")
->>>>>>> origin/choeyoungju
                         ).permitAll()
-                        .requestMatchers(
-                                new AntPathRequestMatcher("/api/**")
-                        ).hasRole("USER")
                         .requestMatchers("/security/user").hasRole("USER")
                         .requestMatchers("/security/admin").hasRole("ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
