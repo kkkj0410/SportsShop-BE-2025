@@ -3,6 +3,7 @@ package com.teamproject.back.repository;
 import com.teamproject.back.entity.Item;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 
@@ -14,16 +15,15 @@ import java.util.List;
 @Repository
 public class ItemRepository {
 
-    @PersistenceContext
-    private EntityManager em;
-
-    public List<Item> findAllItem(){
-        return em.createQuery("select i from Item i", Item.class).getResultList();
-    }
-
 
     @PersistenceContext
     private EntityManager entityManager;
+
+
+    @Transactional(readOnly = true)
+    public List<Item> findAllItem(){
+        return entityManager.createQuery("select i from Item i", Item.class).getResultList();
+    }
 
     @Transactional
     public Item save(Item item){
@@ -106,7 +106,7 @@ public class ItemRepository {
             page = 1;
         }
 
-        return em.createQuery("SELECT I FROM Item I WHERE I.itemName LIKE :itemName order by I.itemName desc", Item.class)
+        return entityManager.createQuery("SELECT I FROM Item I WHERE I.itemName LIKE :itemName order by I.itemName desc", Item.class)
                 .setParameter("itemName", "%" + itemName + "%")
                 .setFirstResult((page - 1) * size)
                 .setMaxResults(size)
@@ -117,19 +117,19 @@ public class ItemRepository {
         if(page < 1){
             page = 1;
         }
-        return em.createQuery("SELECT I FROM Item I")
+        return entityManager.createQuery("SELECT I FROM Item I")
                 .setFirstResult((page-1) * size)
                 .setMaxResults(size)
                 .getResultList();
     }
 
     public int itemCount() {
-        return em.createQuery("SELECT count(I) FROM Item I",Long.class).
+        return entityManager.createQuery("SELECT count(I) FROM Item I",Long.class).
                 getSingleResult().intValue();
     }
 
     public List<Item> findByItemName(int page, int size,String itemName) {
-        return em.createQuery("SELECT I FROM Item  I where I.itemName =:itemName")
+        return entityManager.createQuery("SELECT I FROM Item  I where I.itemName =:itemName")
                 .setParameter(itemName,itemName)
                 .setFirstResult((page-1)*size)
                 .setMaxResults(size)

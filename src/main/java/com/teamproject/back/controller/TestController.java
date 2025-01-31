@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
-@RequestMapping("/security")
 @Controller
+@RequestMapping("/security")
 public class TestController {
 
     @GetMapping("/user")
@@ -24,4 +24,5 @@ public class TestController {
     public ResponseEntity<String> admin(){
         return ResponseEntity.ok("ok12");
     }
+
 }

@@ -1,6 +1,7 @@
 package com.teamproject.back.repository;
 
 
+import com.teamproject.back.dto.oauth2.ProviderUser;
 import com.teamproject.back.entity.Users;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -28,6 +29,7 @@ public class UserRepository{
     }
 
 
+
     @Transactional(readOnly = true)
     public Users findByEmail(String email) {
         String jpql = "SELECT u FROM Users u WHERE u.email = :email";
@@ -40,6 +42,8 @@ public class UserRepository{
             return null;
         }
     }
+
+
 
 
     //Modifying(clearAutomatically = true)은 영속성 컨텍스트를 비움

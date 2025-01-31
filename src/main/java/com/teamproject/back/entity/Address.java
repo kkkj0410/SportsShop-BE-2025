@@ -1,3 +1,4 @@
+
 package com.teamproject.back.entity;
 
 import jakarta.persistence.*;
@@ -7,6 +8,7 @@ import jakarta.persistence.*;
 public class Address {
     @Id
     @GeneratedValue
+    private Long id;
 
     private String city;
 
@@ -18,3 +20,4 @@ public class Address {
     @JoinColumn(name = "user_id")
     private Users users;
 }
+

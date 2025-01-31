@@ -34,8 +34,21 @@ public class UserController {
         return ResponseEntity.ok("ok");
     }
 
+    @GetMapping("/user/{email}")
+    public ResponseEntity<?> getUser(@PathVariable String email){
+
+        log.info("email : {}", email);
+        UserDto userDto = userService.findByUser(email);
+
+        if(userDto != null){
+            return ResponseEntity.ok(userDto);
+        }
+
+        return ResponseEntity.badRequest().body("조회되지 않는 회원입니다.");
+    }
+
     @GetMapping("/user")
-    public ResponseEntity<?> userGet(){
+    public ResponseEntity<?> getUserByCookie(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         log.info("email : {}", email);

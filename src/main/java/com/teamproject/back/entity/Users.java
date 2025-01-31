@@ -28,8 +28,6 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    //수정(1.9)
-    //LocalDateTime -> LocalDate
     private LocalDate birthday;
 
     @Column(name = "enroll_date", nullable = false, updatable = false)
@@ -41,7 +39,7 @@ public class Users {
     @OneToMany(mappedBy = "users")
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "users")
@@ -50,8 +48,8 @@ public class Users {
     @OneToMany(mappedBy = "users")
     private List<Cart> carts;
 
-    @OneToMany(mappedBy = "users")
-    private List<Chats> chats;
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    private List<Likes> likes;
 
     @PrePersist
     public void prePersist() {
@@ -63,4 +61,6 @@ public class Users {
     public void deleteUser() {
         this.deleteDate = LocalDateTime.now();
     }
+
+
 }
