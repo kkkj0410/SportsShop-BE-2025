@@ -17,7 +17,7 @@ public class ItemDTO {
 
     private String itemImg;
 
-    private String itemRating;
+    private Integer averageRating;
 
     private int itemStock;
 

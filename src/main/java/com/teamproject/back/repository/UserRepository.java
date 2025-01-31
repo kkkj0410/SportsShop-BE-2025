@@ -1,6 +1,7 @@
 package com.teamproject.back.repository;
 
 
+import com.teamproject.back.dto.oauth2.ProviderUser;
 import com.teamproject.back.entity.Users;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -25,6 +26,7 @@ public class UserRepository{
 
         return users;
     }
+
 
 
     @Transactional(readOnly = true)
