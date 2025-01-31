@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 
 
 @Repository
@@ -82,5 +83,22 @@ public class UserRepository{
 
         return  count;
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<Users> findAllUsers(int page, int size) {
+        return entityManager.createQuery("SELECT u from Users u")
+                .setFirstResult((page-1)*size)
+                .setMaxResults(size)
+                .getResultList();
+    }
+    @Transactional(readOnly = true)
+    public int userCount() {
+       return entityManager.createQuery("SELECT COUNT(u) FROM Users u",Long.class)
+               .getSingleResult().intValue();
+    }
+
+    public Users findById(Long id) {
+        return entityManager.find(Users.class, id);
     }
 }

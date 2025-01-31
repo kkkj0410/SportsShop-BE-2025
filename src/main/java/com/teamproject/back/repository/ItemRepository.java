@@ -127,4 +127,12 @@ public class ItemRepository {
         return em.createQuery("SELECT count(I) FROM Item I",Long.class).
                 getSingleResult().intValue();
     }
+
+    public List<Item> findByItemName(int page, int size,String itemName) {
+        return em.createQuery("SELECT I FROM Item  I where I.itemName =:itemName")
+                .setParameter(itemName,itemName)
+                .setFirstResult((page-1)*size)
+                .setMaxResults(size)
+                .getResultList();
+    }
 }

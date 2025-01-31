@@ -6,7 +6,6 @@ import com.teamproject.back.dto.ItemFormResponseDto;
 import com.teamproject.back.entity.Item;
 import com.teamproject.back.repository.ItemRepository;
 import com.teamproject.back.util.GcsImage;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -178,6 +177,27 @@ public class ItemService {
     public List<ItemDTO> findByAllItem(int page, int size) {
         List<ItemDTO> itemDTOList = new ArrayList<>();
         List<Item> itemList = itemRepository.findByAllItem(page,size);
+        int totalCount = itemRepository.itemCount();
+        for (Item item : itemList) {
+            ItemDTO itemDTO = new ItemDTO();
+            itemDTO.setId(item.getId());
+            itemDTO.setItemName(item.getItemName());
+            itemDTO.setItemDesc(item.getItemDesc());
+            itemDTO.setItemImg(item.getItemImg());
+            itemDTO.setItemStock(item.getItemStock());
+            itemDTO.setItemOriginPrice(item.getItemOriginPrice());
+            itemDTO.setItemBrand(item.getItemBrand());
+            itemDTO.setItemRating(item.getItemRating());
+            itemDTO.setItemPrice(item.getItemSale());
+            itemDTO.setTotalData(totalCount);
+            itemDTOList.add(itemDTO);
+        }
+        return itemDTOList;
+    }
+
+    public List<ItemDTO> findByItemName(int page, int size, String itemName) {
+        List<ItemDTO> itemDTOList = new ArrayList<>();
+        List<Item> itemList = itemRepository.findByItemName(page,size,itemName);
         int totalCount = itemRepository.itemCount();
         for (Item item : itemList) {
             ItemDTO itemDTO = new ItemDTO();

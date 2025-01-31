@@ -5,10 +5,14 @@ import com.teamproject.back.entity.Role;
 import com.teamproject.back.entity.Users;
 import com.teamproject.back.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -83,4 +87,22 @@ public class UserService {
     }
 
 
+    public List<UserDto> findAllUsersList(int page, int size) {
+            List<Users> usersList = userRepository.findAllUsers(page,size);
+            List<UserDto> userDtos = new ArrayList<>();
+            for(Users users : usersList){
+                userDtos.add(usersToUserDto(users));
+            }
+            return userDtos;
+    }
+    //전체 사람수
+    public int userCount(){
+        int result  = userRepository.userCount();
+        return result;
+    }
+
+    public UserDto findByUserId(Long id) {
+        Users users = userRepository.findById(id);
+        return usersToUserDto(users);
+    }
 }
