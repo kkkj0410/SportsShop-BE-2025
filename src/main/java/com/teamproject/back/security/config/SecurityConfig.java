@@ -27,11 +27,7 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Autowired
-<<<<<<< HEAD
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-=======
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, OAuth2Service oAuth2Service, OAuth2SuccessHandler oAuth2SuccessHandler, CustomAuthenticationEntryPoint customAuthenticationEntryPoint){
->>>>>>> origin/choeyoungju
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.oAuth2Service = oAuth2Service;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
@@ -50,16 +46,13 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/api/auth/**"),
-<<<<<<< HEAD
                                 new AntPathRequestMatcher("/signup"),
                                 new AntPathRequestMatcher("/ws/chat/**"),
                                 new AntPathRequestMatcher("/api/signup"),
                                 new AntPathRequestMatcher("/image"),
                                 new AntPathRequestMatcher("/api/category"),
                                 new AntPathRequestMatcher("/api/header"),
-                                new AntPathRequestMatcher("/api/chat/**")
-
-=======
+                                new AntPathRequestMatcher("/api/chat/**"),
                                 new AntPathRequestMatcher("/api/home"),
                                 new AntPathRequestMatcher("/ws/chat/**"),
                                 new AntPathRequestMatcher("/api/signup"),
@@ -67,7 +60,6 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/api/email/**"),
                                 new AntPathRequestMatcher("/api/user/{email}"),
                                 new AntPathRequestMatcher("/api/login/**")
->>>>>>> origin/choeyoungju
                         ).permitAll()
                         .requestMatchers("/security/user").hasRole("USER")
                         .requestMatchers("/security/admin").hasRole("ADMIN")

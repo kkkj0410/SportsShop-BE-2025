@@ -16,8 +16,6 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    //****(1.17)******
-    // int id -> Integer id
 
     private String itemName;
 
@@ -27,7 +25,7 @@ public class Item {
 
     private int itemStock;
 
-    private int itemSale;
+    private int itemPrice;
 
     private int itemOriginPrice;
 

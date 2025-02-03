@@ -3,9 +3,11 @@ package com.teamproject.back.service;
 import com.teamproject.back.dto.ItemDTO;
 import com.teamproject.back.dto.ItemFormRequestDto;
 import com.teamproject.back.dto.ItemFormResponseDto;
+import com.teamproject.back.entity.Comment;
 import com.teamproject.back.entity.Item;
 import com.teamproject.back.repository.CommentRepository;
 import com.teamproject.back.repository.ItemRepository;
+import com.teamproject.back.repository.LikeRepository;
 import com.teamproject.back.util.GcsImage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +24,15 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final CommentRepository commentRepository;
-
+    private final LikeRepository likeRepository;
 
     private final GcsImage gcsImage;
 
     @Autowired
-    public ItemService(ItemRepository itemRepository, CommentRepository commentRepository, GcsImage gcsImage) {
+    public ItemService(ItemRepository itemRepository, CommentRepository commentRepository,LikeRepository likeRepository, GcsImage gcsImage) {
         this.itemRepository = itemRepository;
         this.commentRepository = commentRepository;
+        this.likeRepository = likeRepository;
         this.gcsImage = gcsImage;
     }
 
@@ -64,6 +67,9 @@ public class ItemService {
     }
 
     public int deleteById(int id, String imageUrl){
+
+        deleteComments(id);
+
         if(!gcsImage.deleteImage(imageUrl)){
             log.info("이미지 삭제 실패");
         }
@@ -87,21 +93,33 @@ public class ItemService {
 
         return itemToItemFormResponseDto(updateItem);
     }
-//
-//    private int deleteImage(int id){
-//        ItemFormResponseDto itemFormResponseDto = findById(id);
-//        if(itemFormResponseDto == null){
-//            log.info("회원 조회 실패");
-//            return 0;
-//        }
-//
-//        if(!gcsImage.deleteImage(itemFormResponseDto.getItemImg())){
-//            log.info("이미지 삭제 실패");
-//            return 0;
-//        }
-//
-//        return 1;
-//    }
+    private int deleteComments(Integer itemId){
+        List<Long> commentIds = findCommentIdsById(itemId);
+
+        commentIds.forEach(this::deleteCommentByCommentId);
+
+        return 1;
+    }
+
+    private List<Long> findCommentIdsById(Integer itemId){
+        return commentRepository.findIdsByItemId(itemId);
+    }
+
+    //삭제 : 자식 좋아요 -> 자식 댓글 -> 본인 좋아요 -> 본인 댓글
+    private int deleteCommentByCommentId(Long commentId){
+        List<Comment> commentList = commentRepository.findChildCommentById(commentId);
+
+        commentList.forEach(comment -> {
+            likeRepository.deleteAllByCommentId(comment.getId());
+            commentRepository.delete(comment.getId());
+
+        });
+
+        likeRepository.deleteAllByCommentId(commentId);
+        commentRepository.delete(commentId);
+
+        return 1;
+    }
 
 
     private ItemFormResponseDto itemToItemFormResponseDto(Item item){
@@ -119,6 +137,7 @@ public class ItemService {
                     .averageRating(averageRating)
                     .itemStock(item.getItemStock())
                     .itemOriginPrice(item.getItemOriginPrice())
+                    .itemPrice(item.getItemPrice())
                     .itemBrand(item.getItemBrand())
                     .category(item.getCategory())
                     .build();
@@ -134,21 +153,7 @@ public class ItemService {
 
 
 
-//    private Item itemFormReponseDtoToItem(ItemFormResponseDto itemFormResponseDto){
-//        if(itemFormResponseDto != null){
-//            return Item.builder()
-//                    .id(itemFormResponseDto.getId())
-//                    .itemName(itemFormResponseDto.getItemName())
-//                    .itemDesc(itemFormResponseDto.getItemDesc())
-//                    .itemImg(itemFormResponseDto.getItemImg())
-//                    .itemStock(itemFormResponseDto.getItemStock())
-//                    .itemOriginPrice(itemFormResponseDto.getItemOriginPrice())
-//                    .itemBrand(itemFormResponseDto.getItemBrand())
-//                    .category(itemFormResponseDto.getCategory())
-//                    .build();
-//        }
-//        return null;
-//    }
+
 
     private Item itemFormRequestDtoToItem(ItemFormRequestDto itemDto){
         if(itemDto.getId() != null){
@@ -159,6 +164,7 @@ public class ItemService {
                     .itemImg(itemDto.getItemImg())
                     .itemStock(itemDto.getItemStock())
                     .itemOriginPrice(itemDto.getItemOriginPrice())
+                    .itemPrice(itemDto.getItemPrice())
                     .itemBrand(itemDto.getItemBrand())
                     .category(itemDto.getCategory())
                     .build();
@@ -171,6 +177,7 @@ public class ItemService {
                 .itemImg(itemDto.getItemImg())
                 .itemStock(itemDto.getItemStock())
                 .itemOriginPrice(itemDto.getItemOriginPrice())
+                .itemPrice(itemDto.getItemPrice())
                 .itemBrand(itemDto.getItemBrand())
                 .category(itemDto.getCategory())
                 .build();
@@ -197,8 +204,8 @@ public class ItemService {
             itemDTO.setItemStock(item.getItemStock());
             itemDTO.setItemOriginPrice(item.getItemOriginPrice());
             itemDTO.setItemBrand(item.getItemBrand());
-            itemDTO.setItemRating(item.getItemRating());
-            itemDTO.setItemPrice(item.getItemSale());
+//            itemDTO.setItemRating(item.getItemRating());
+//            itemDTO.setItemPrice(item.getItemSale());
             itemDTO.setTotalData(totalCount);
             itemDTOList.add(itemDTO);
         }
@@ -218,8 +225,8 @@ public class ItemService {
             itemDTO.setItemStock(item.getItemStock());
             itemDTO.setItemOriginPrice(item.getItemOriginPrice());
             itemDTO.setItemBrand(item.getItemBrand());
-            itemDTO.setItemRating(item.getItemRating());
-            itemDTO.setItemPrice(item.getItemSale());
+//            itemDTO.setItemRating(item.getItemRating());
+//            itemDTO.setItemPrice(item.getItemSale());
             itemDTO.setTotalData(totalCount);
             itemDTOList.add(itemDTO);
         }
