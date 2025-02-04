@@ -70,7 +70,7 @@ public class UserController {
         return ResponseEntity.badRequest().body("사용자 수정 실패");
     }
 
-    @PatchMapping("/user/password")
+    @PatchMapping("/user/profile/password")
     public ResponseEntity<?> passwordPatch(@RequestBody UserDto userDto){
         if(userService.patchPassword(userDto.getPassword()) == 1){
             return ResponseEntity.ok("ok");
@@ -78,5 +78,17 @@ public class UserController {
 
         return ResponseEntity.badRequest().body("비밀번호 수정 실패");
     }
+
+
+    //forgot Password
+    @PatchMapping("/user/password")
+    public ResponseEntity<?> patchUserPassword(@RequestBody UserDto userDto){
+        if(userService.patchPassword(userDto.getEmail(), userDto.getPassword()) == 1){
+            return ResponseEntity.ok("ok");
+        }
+
+        return ResponseEntity.badRequest().body("비밀번호 수정 실패");
+    }
+
 
 }

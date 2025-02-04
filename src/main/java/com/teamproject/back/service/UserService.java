@@ -62,6 +62,10 @@ public class UserService {
         return userRepository.patchPassword(email, passwordEncoder.encode(password));
     }
 
+    public int patchPassword(String email, String password){
+        return userRepository.patchPassword(email, passwordEncoder.encode(password));
+    }
+
 //    private Users encryptUsers(Users users){
 //        return Users.builder()
 //                .id(users.getId())
