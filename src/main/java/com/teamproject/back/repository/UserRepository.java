@@ -44,8 +44,6 @@ public class UserRepository{
     }
 
 
-
-
     //Modifying(clearAutomatically = true)은 영속성 컨텍스트를 비움
     //Update는 DB에만 값을 반영함(영속성 컨텍스트에는 반영X)
     @Modifying(clearAutomatically = true)

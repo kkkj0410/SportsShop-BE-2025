@@ -3,6 +3,7 @@ package com.teamproject.back.service;
 import com.teamproject.back.dto.UserDto;
 import com.teamproject.back.entity.Users;
 import com.teamproject.back.repository.AuthRepository;
+import com.teamproject.back.util.AesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,11 +14,13 @@ public class AuthService {
 
     private final AuthRepository authRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final AesUtil aesUtil;
 
     @Autowired
-    public AuthService(AuthRepository authRepository, BCryptPasswordEncoder passwordEncoder){
+    public AuthService(AuthRepository authRepository, BCryptPasswordEncoder passwordEncoder, AesUtil aesUtil){
         this.authRepository = authRepository;
         this.passwordEncoder = passwordEncoder;
+        this.aesUtil = aesUtil;
     }
 
     public UserDto login(String email, String inputPassword){
@@ -30,9 +33,10 @@ public class AuthService {
     }
 
     public UserDto findByUser(String email){
-        Users user = authRepository.findByEmail(email);
+        Users user = authRepository.findByEmail(aesUtil.encrypt(email));
         if(user != null){
-            return usersToUserDto(user);
+            Users decryptUsers = decrypt(user);
+            return usersToUserDto(decryptUsers);
         }
         return null;
     }
@@ -45,6 +49,19 @@ public class AuthService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         return passwordEncoder.matches(rawPassword, this.findByUser(email).getPassword());
+    }
+
+    private Users decrypt(Users users){
+        return Users.builder()
+                .id(users.getId())
+                .email(aesUtil.decrypt(users.getEmail()))
+                .password(users.getPassword())
+                .username(aesUtil.decrypt(users.getUsername()))
+                .phoneNumber(aesUtil.decrypt(users.getPhoneNumber()))
+                .role(users.getRole())
+                .birthday(users.getBirthday())
+                .build();
+
     }
 
 

@@ -4,8 +4,8 @@ import com.teamproject.back.dto.UserDto;
 import com.teamproject.back.entity.Role;
 import com.teamproject.back.entity.Users;
 import com.teamproject.back.repository.UserRepository;
+import com.teamproject.back.util.AesUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,11 +20,13 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final AesUtil aesUtil;
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, AesUtil aesUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.aesUtil = aesUtil;
     }
 
     public boolean save(UserDto userDto){
@@ -37,30 +39,62 @@ public class UserService {
         userDto.setRole(Role.USER);
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        Users users = userRepository.save(userDtoToUser(userDto));
+        Users encryptUser = encryptUsers(userDtoToUser(userDto));
+
+        Users users = userRepository.save(encryptUser);
         log.info("Save User : {}", users);
         return true;
     }
 
 
     public UserDto findByUser(String email){
-        Users users = userRepository.findByEmail(email);
+        Users users = userRepository.findByEmail(aesUtil.encrypt(email));
         if(users == null){
             log.info("user is null");
             return null;
         }
 
-        return usersToUserDto(users);
+        Users decryptUser = decryptUsers(users);
+
+        return usersToUserDto(decryptUser);
     }
 
     public int patchUser(UserDto userDto){
-        return userRepository.patchUser(userDtoToUser(userDto));
+        Users encryptUser = encryptUsers(userDtoToUser(userDto));
+        return userRepository.patchUser(encryptUser);
     }
 
     public int patchPassword(String password){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.patchPassword(email, passwordEncoder.encode(password));
+        return userRepository.patchPassword(aesUtil.encrypt(email), passwordEncoder.encode(password));
     }
+
+    private Users encryptUsers(Users users){
+        return Users.builder()
+                .id(users.getId())
+                .email(aesUtil.encrypt(users.getEmail()))
+                .password(users.getPassword())
+                .username(aesUtil.encrypt(users.getUsername()))
+                .phoneNumber(aesUtil.encrypt(users.getPhoneNumber()))
+                .role(users.getRole())
+                .birthday(users.getBirthday())
+                .build();
+
+    }
+
+    private Users decryptUsers(Users users){
+        return Users.builder()
+                .id(users.getId())
+                .email(aesUtil.decrypt(users.getEmail()))
+                .password(users.getPassword())
+                .username(aesUtil.decrypt(users.getUsername()))
+                .phoneNumber(aesUtil.decrypt(users.getPhoneNumber()))
+                .role(users.getRole())
+                .birthday(users.getBirthday())
+                .build();
+
+    }
+
 
     private UserDto usersToUserDto(Users users){
         return UserDto.builder()
