@@ -14,13 +14,11 @@ public class AuthService {
 
     private final AuthRepository authRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final AesUtil aesUtil;
 
     @Autowired
-    public AuthService(AuthRepository authRepository, BCryptPasswordEncoder passwordEncoder, AesUtil aesUtil){
+    public AuthService(AuthRepository authRepository, BCryptPasswordEncoder passwordEncoder){
         this.authRepository = authRepository;
         this.passwordEncoder = passwordEncoder;
-        this.aesUtil = aesUtil;
     }
 
     public UserDto login(String email, String inputPassword){
@@ -33,10 +31,9 @@ public class AuthService {
     }
 
     public UserDto findByUser(String email){
-        Users user = authRepository.findByEmail(aesUtil.encrypt(email));
+        Users user = authRepository.findByEmail(email);
         if(user != null){
-            Users decryptUsers = decrypt(user);
-            return usersToUserDto(decryptUsers);
+            return usersToUserDto(user);
         }
         return null;
     }
@@ -51,18 +48,18 @@ public class AuthService {
         return passwordEncoder.matches(rawPassword, this.findByUser(email).getPassword());
     }
 
-    private Users decrypt(Users users){
-        return Users.builder()
-                .id(users.getId())
-                .email(aesUtil.decrypt(users.getEmail()))
-                .password(users.getPassword())
-                .username(aesUtil.decrypt(users.getUsername()))
-                .phoneNumber(aesUtil.decrypt(users.getPhoneNumber()))
-                .role(users.getRole())
-                .birthday(users.getBirthday())
-                .build();
-
-    }
+//    private Users decrypt(Users users){
+//        return Users.builder()
+//                .id(users.getId())
+//                .email(AesUtil.decrypt(users.getEmail()))
+//                .password(users.getPassword())
+//                .username(AesUtil.decrypt(users.getUsername()))
+//                .phoneNumber(AesUtil.decrypt(users.getPhoneNumber()))
+//                .role(users.getRole())
+//                .birthday(users.getBirthday())
+//                .build();
+//
+//    }
 
 
     private UserDto usersToUserDto(Users users){

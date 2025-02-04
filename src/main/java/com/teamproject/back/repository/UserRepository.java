@@ -3,6 +3,7 @@ package com.teamproject.back.repository;
 
 import com.teamproject.back.dto.oauth2.ProviderUser;
 import com.teamproject.back.entity.Users;
+import com.teamproject.back.util.AesUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
@@ -32,11 +33,13 @@ public class UserRepository{
 
     @Transactional(readOnly = true)
     public Users findByEmail(String email) {
+        String encryptedEmail = AesUtil.encrypt(email);
+
         String jpql = "SELECT u FROM Users u WHERE u.email = :email";
 
         try {
             return entityManager.createQuery(jpql, Users.class)
-                    .setParameter("email", email)
+                    .setParameter("email", encryptedEmail)
                     .getSingleResult();
         } catch (NoResultException e) {
             return null;
@@ -56,10 +59,10 @@ public class UserRepository{
                 "WHERE u.email = :email";
 
         int count = entityManager.createQuery(jpql)
-                .setParameter("username", users.getUsername())
-                .setParameter("phoneNumber", users.getPhoneNumber())
+                .setParameter("username", AesUtil.encrypt(users.getUsername()))
+                .setParameter("phoneNumber", AesUtil.encrypt(users.getPhoneNumber()))
                 .setParameter("birthday", users.getBirthday())
-                .setParameter("email", users.getEmail())
+                .setParameter("email", AesUtil.encrypt(users.getEmail()))
                 .executeUpdate();
 
         entityManager.flush();
@@ -71,13 +74,15 @@ public class UserRepository{
     @Modifying(clearAutomatically = true)
     @Transactional
     public int patchPassword(String email, String encodedPassword) {
+        String encryptedEmail = AesUtil.encrypt(email);
+
         String jpql = "UPDATE Users u SET " +
                 "u.password = :password " +
                 "WHERE u.email = :email";
 
         int count = entityManager.createQuery(jpql)
                     .setParameter("password", encodedPassword)
-                    .setParameter("email", email)
+                    .setParameter("email", encryptedEmail)
                     .executeUpdate();
 
         entityManager.flush();
@@ -103,4 +108,6 @@ public class UserRepository{
     public Users findById(Long id) {
         return entityManager.find(Users.class, id);
     }
+
+
 }

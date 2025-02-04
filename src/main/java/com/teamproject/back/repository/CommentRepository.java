@@ -3,6 +3,7 @@ package com.teamproject.back.repository;
 import com.teamproject.back.entity.Comment;
 import com.teamproject.back.entity.Item;
 import com.teamproject.back.entity.Users;
+import com.teamproject.back.util.AesUtil;
 import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +80,7 @@ public class CommentRepository {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = em.createQuery("SELECT u FROM Users u WHERE u.email = :email", Users.class)
-                .setParameter("email", email)
+                .setParameter("email", AesUtil.encrypt(email))
                 .getSingleResult();
 
         comment.fetchUsers(user);
@@ -96,9 +97,11 @@ public class CommentRepository {
 //        Comment parentComment = em.createQuery(jpql, Comment.class)
 //                .setParameter("parentCommentId", parentCommentId)
 //                .getSingleResult();
+        String encryptedEmail = AesUtil.encrypt(email);
+
         String jpql = "SELECT u FROM Users u WHERE u.email = :email";
         Users users = em.createQuery(jpql, Users.class)
-                .setParameter("email", email)
+                .setParameter("email", encryptedEmail)
                 .getSingleResult();
 
         if(users == null){

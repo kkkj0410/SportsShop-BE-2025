@@ -17,14 +17,18 @@ import java.util.Base64;
 @Slf4j
 public class AesUtil {
 
-    private final String ALGORITHM = "AES";
-
-
+    private static final String ALGORITHM = "AES";
     @Value("${aes.secret}")
-    private String SECRET_KEY;
+    private String SECRET;
 
+    private static String SECRET_KEY;
 
-    public String encrypt(String input){
+    @PostConstruct
+    public void init(){
+        SECRET_KEY = SECRET;
+    }
+
+    public static String encrypt(String input){
         try{
             SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), ALGORITHM);
             Cipher cipher = Cipher.getInstance(ALGORITHM);
@@ -41,7 +45,7 @@ public class AesUtil {
 
     }
 
-    public String decrypt(String encryptedInput) {
+    public static String decrypt(String encryptedInput) {
 
         try{
             SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), ALGORITHM);

@@ -4,6 +4,7 @@ import com.teamproject.back.entity.Comment;
 import com.teamproject.back.entity.Item;
 import com.teamproject.back.entity.Likes;
 import com.teamproject.back.entity.Users;
+import com.teamproject.back.util.AesUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
@@ -38,6 +39,8 @@ public class LikeRepository {
 
     @Transactional(readOnly = true)
     public boolean checkClicked(Long commentId, String email){
+        String encryptedEmail = AesUtil.encrypt(email);
+
         String jpql = "SELECT l FROM Likes l " +
                 "JOIN FETCH l.comment c " +
                 "JOIN FETCH l.users u " +
@@ -48,7 +51,7 @@ public class LikeRepository {
         try {
             em.createQuery(jpql, Likes.class)
                     .setParameter("commentId", commentId)
-                    .setParameter("email", email)
+                    .setParameter("email", encryptedEmail)
                     .getSingleResult();
         } catch (NoResultException e) {
             return false;
@@ -62,6 +65,8 @@ public class LikeRepository {
 
     @Transactional
     public Likes save(Long commentId, String email){
+        String encryptedEmail = AesUtil.encrypt(email);
+
         // 중복된 좋아요 추가는 무시
         if(checkClicked(commentId, email)){
             return null;
@@ -73,7 +78,7 @@ public class LikeRepository {
                                   "WHERE u.email = :email";
         try{
             Users user = em.createQuery(findUsersByEmail, Users.class)
-                    .setParameter("email", email)
+                    .setParameter("email", encryptedEmail)
                     .getSingleResult();
             Likes like = Likes.builder().build();
             like.fetchComment(comment);
@@ -91,6 +96,8 @@ public class LikeRepository {
 
     @Transactional
     public int delete(Long commentId, String email){
+        String encryptedEmail = AesUtil.encrypt(email);
+
         //l.comment, l.users를 불러오는 과정에서 +2번 쿼리 추가 소모
         //DELETE에 JOIN FETCH 사용 불가
         String jpql = "DELETE FROM Likes l " +
@@ -99,7 +106,7 @@ public class LikeRepository {
 
         return em.createQuery(jpql)
                 .setParameter("commentId", commentId)
-                .setParameter("email", email)
+                .setParameter("email", encryptedEmail)
                 .executeUpdate();
     }
 

@@ -20,13 +20,11 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final AesUtil aesUtil;
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, AesUtil aesUtil) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.aesUtil = aesUtil;
     }
 
     public boolean save(UserDto userDto){
@@ -39,61 +37,56 @@ public class UserService {
         userDto.setRole(Role.USER);
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        Users encryptUser = encryptUsers(userDtoToUser(userDto));
-
-        Users users = userRepository.save(encryptUser);
+        Users users = userRepository.save(userDtoToUser(userDto));
         log.info("Save User : {}", users);
         return true;
     }
 
 
     public UserDto findByUser(String email){
-        Users users = userRepository.findByEmail(aesUtil.encrypt(email));
+        Users users = userRepository.findByEmail(email);
         if(users == null){
             log.info("user is null");
             return null;
         }
 
-        Users decryptUser = decryptUsers(users);
-
-        return usersToUserDto(decryptUser);
+        return usersToUserDto(users);
     }
 
     public int patchUser(UserDto userDto){
-        Users encryptUser = encryptUsers(userDtoToUser(userDto));
-        return userRepository.patchUser(encryptUser);
+        return userRepository.patchUser(userDtoToUser(userDto));
     }
 
     public int patchPassword(String password){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.patchPassword(aesUtil.encrypt(email), passwordEncoder.encode(password));
+        return userRepository.patchPassword(email, passwordEncoder.encode(password));
     }
 
-    private Users encryptUsers(Users users){
-        return Users.builder()
-                .id(users.getId())
-                .email(aesUtil.encrypt(users.getEmail()))
-                .password(users.getPassword())
-                .username(aesUtil.encrypt(users.getUsername()))
-                .phoneNumber(aesUtil.encrypt(users.getPhoneNumber()))
-                .role(users.getRole())
-                .birthday(users.getBirthday())
-                .build();
-
-    }
-
-    private Users decryptUsers(Users users){
-        return Users.builder()
-                .id(users.getId())
-                .email(aesUtil.decrypt(users.getEmail()))
-                .password(users.getPassword())
-                .username(aesUtil.decrypt(users.getUsername()))
-                .phoneNumber(aesUtil.decrypt(users.getPhoneNumber()))
-                .role(users.getRole())
-                .birthday(users.getBirthday())
-                .build();
-
-    }
+//    private Users encryptUsers(Users users){
+//        return Users.builder()
+//                .id(users.getId())
+//                .email(users.getEmail())
+//                .password(users.getPassword())
+//                .username(users.getUsername())
+//                .phoneNumber(users.getPhoneNumber())
+//                .role(users.getRole())
+//                .birthday(users.getBirthday())
+//                .build();
+//
+//    }
+//
+//    private Users decryptUsers(Users users){
+//        return Users.builder()
+//                .id(users.getId())
+//                .email(users.getEmail())
+//                .password(users.getPassword())
+//                .username(users.getUsername())
+//                .phoneNumber(users.getPhoneNumber())
+//                .role(users.getRole())
+//                .birthday(users.getBirthday())
+//                .build();
+//
+//    }
 
 
     private UserDto usersToUserDto(Users users){

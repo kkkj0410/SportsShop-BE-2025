@@ -1,5 +1,6 @@
 package com.teamproject.back.entity;
 
+import com.teamproject.back.util.AesUtil;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -56,11 +57,33 @@ public class Users {
         if (this.enrollDate == null) {
             this.enrollDate = LocalDateTime.now();
         }
+        encryptField();
+    }
+
+    @PostLoad
+    public void postLoad(){
+        decryptField();
+    }
+
+    @PreUpdate
+    public void preUpdate(){
+        encryptField();
     }
 
     public void deleteUser() {
         this.deleteDate = LocalDateTime.now();
     }
 
+    private void encryptField(){
+        this.email = AesUtil.encrypt(email);
+        this.username = AesUtil.encrypt(username);
+        this.phoneNumber = AesUtil.encrypt(phoneNumber);
+    }
+
+    private void decryptField(){
+        this.email = AesUtil.decrypt(email);
+        this.username = AesUtil.decrypt(username);
+        this.phoneNumber = AesUtil.decrypt(phoneNumber);
+    }
 
 }
