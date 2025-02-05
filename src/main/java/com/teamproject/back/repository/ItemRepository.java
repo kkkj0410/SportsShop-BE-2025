@@ -135,4 +135,8 @@ public class ItemRepository {
                 .setMaxResults(size)
                 .getResultList();
     }
+
+    public Item findByItemId(int id) {
+        return entityManager.find(Item.class, id);
+    }
 }

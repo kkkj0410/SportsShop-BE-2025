@@ -10,7 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Repository
 @Slf4j
@@ -197,7 +200,17 @@ public class CommentRepository {
         }
     }
 
-
-
-
+    @Transactional(readOnly = true)
+    public Map<String, Object> findByRatingAndCommentCount(Long id) {
+        Double ratingAvg = (Double) em.createQuery("SELECT AVG(c.rating) FROM Comment c WHERE c.item.id =:id")
+                .setParameter("id",id)
+                .getSingleResult();
+        Long commentCount = (Long) em.createQuery("SELECT COUNT(*) FROM Comment c WHERE c.item.id =:id")
+                .setParameter("id",id)
+                .getSingleResult();
+        Map<String, Object> map = new HashMap<>();
+        map.put("ratingAvg", ratingAvg);
+        map.put("commentCount",commentCount);
+        return map;
+    }
 }

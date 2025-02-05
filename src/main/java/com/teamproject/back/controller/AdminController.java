@@ -1,8 +1,10 @@
 package com.teamproject.back.controller;
 
+import com.teamproject.back.dto.CommentDto;
 import com.teamproject.back.dto.ItemDTO;
 import com.teamproject.back.dto.UserDto;
 import com.teamproject.back.entity.Item;
+import com.teamproject.back.service.CommentService;
 import com.teamproject.back.service.ItemService;
 import com.teamproject.back.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import java.util.Map;
 public class AdminController {
     private final ItemService itemService;
     private final UserService userService;
+    private final CommentService commentService;
 
     // 삭제, 조회 기능
     //find/delete
@@ -65,6 +68,17 @@ public class AdminController {
         public ResponseEntity<UserDto> adminFindUserInfo (@PathVariable Long id){
             UserDto userDto = userService.findByUserId(id);
             return ResponseEntity.ok(userDto);
+        }
+        @GetMapping("/api/admin/item/detail/{id}")
+        public ResponseEntity<Map<String,Object>> adminFindItemDetail (@PathVariable int id){
+            Map<String,Object> map = new HashMap<>();
+            log.info("아이템 id{}",id);
+            ItemDTO itemDTO  = itemService.findByItemId(id);
+            Map<String,Object> result = commentService.findByRatingAndCommentCount((long) id);
+            map.put("itemData",itemDTO);
+            map.put("commentCount",result.get("commentCount"));
+            map.put("ratingAvg",result.get("ratingAvg"));
+            return ResponseEntity.ok(map);
         }
 
 
