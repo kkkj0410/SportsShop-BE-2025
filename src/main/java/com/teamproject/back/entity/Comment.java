@@ -35,7 +35,6 @@ public class Comment {
     @JsonIgnore
     private Users users;
 
-    //***1.20 - 추가 제안***
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     @JsonIgnore
@@ -50,7 +49,6 @@ public class Comment {
     @JsonManagedReference
     private List<Comment> childComments = new ArrayList<>();
 
-    // ***(1.22)*** : int likes -> Likes likes
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
     private List<Likes> likes = new ArrayList<>();
 

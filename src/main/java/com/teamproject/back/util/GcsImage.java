@@ -2,10 +2,7 @@ package com.teamproject.back.util;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.WriteChannel;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +39,7 @@ public class GcsImage {
 
     // 회원 정보 수정
     public String uploadImage(MultipartFile image){
+
         if(storage == null){
             log.info("Storage 생성 실패");
             return null;
