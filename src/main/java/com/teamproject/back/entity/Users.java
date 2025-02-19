@@ -24,11 +24,15 @@ public class Users {
     private String email;
     private String password;
     private String username;
-    //010-1234-5678
-    private String phoneNumber;
+
+    //***delete(2.19)***
+//    private String phoneNumber;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    //회원가입 시, NULL
+    //성인 인증 시, birthday 추가
     private LocalDate birthday;
 
     @Column(name = "enroll_date", nullable = false, updatable = false)
@@ -77,13 +81,13 @@ public class Users {
     private void encryptField(){
         this.email = AesUtil.encrypt(email);
         this.username = AesUtil.encrypt(username);
-        this.phoneNumber = AesUtil.encrypt(phoneNumber);
+//        this.phoneNumber = AesUtil.encrypt(phoneNumber);
     }
 
     private void decryptField(){
         this.email = AesUtil.decrypt(email);
         this.username = AesUtil.decrypt(username);
-        this.phoneNumber = AesUtil.decrypt(phoneNumber);
+//        this.phoneNumber = AesUtil.decrypt(phoneNumber);
     }
 
 }

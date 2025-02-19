@@ -99,7 +99,6 @@ public class UserService {
                 .email(users.getEmail())
                 .password(users.getPassword())
                 .username(users.getUsername())
-                .phoneNumber(users.getPhoneNumber())
                 .role(users.getRole())
                 .birthday(users.getBirthday())
                 .build();
@@ -111,7 +110,6 @@ public class UserService {
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
                 .username(userDto.getUsername())
-                .phoneNumber(userDto.getPhoneNumber())
                 .role(userDto.getRole())
                 .birthday(userDto.getBirthday())
                 .build();

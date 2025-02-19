@@ -40,10 +40,8 @@ public class Item {
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Cart> carts;
 
-    //***1.20 추가***
     @OneToMany(mappedBy = "item",fetch = FetchType.LAZY)
     private List<Comment> comments;
-
 
     @Transient // 이 필드는 DB에 저장되지 않음
     private Integer averageRating;

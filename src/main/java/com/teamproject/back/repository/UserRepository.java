@@ -54,13 +54,11 @@ public class UserRepository{
     public int patchUser(Users users){
         String jpql = "UPDATE Users u SET " +
                 "u.username = :username, " +
-                "u.phoneNumber = :phoneNumber, " +
                 "u.birthday = :birthday " +
                 "WHERE u.email = :email";
 
         int count = entityManager.createQuery(jpql)
                 .setParameter("username", AesUtil.encrypt(users.getUsername()))
-                .setParameter("phoneNumber", AesUtil.encrypt(users.getPhoneNumber()))
                 .setParameter("birthday", users.getBirthday())
                 .setParameter("email", AesUtil.encrypt(users.getEmail()))
                 .executeUpdate();
