@@ -139,4 +139,10 @@ public class ItemRepository {
     public Item findByItemId(int id) {
         return entityManager.find(Item.class, id);
     }
+    //메인화면에서 검색을 했을때
+    public List<Item> findByItemName(String debouncedSearch) {
+        return entityManager.createQuery("SELECT I FROM Item  I WHERE I.itemName LIKE :itemName ",Item.class)
+                .setParameter("itemName", "%"+debouncedSearch+"%")
+                .getResultList();
+    }
 }

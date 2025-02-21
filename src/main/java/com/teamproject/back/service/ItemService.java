@@ -240,4 +240,22 @@ public class ItemService {
         }
         return null;
     }
+
+    public List<ItemDTO> findByItemName(String debouncedSearch) {
+        List<Item> itemList = itemRepository.findByItemName(debouncedSearch);
+        List<ItemDTO> itemDTOList = new ArrayList<>();
+        for (Item item : itemList) {
+            ItemDTO itemDTO = new ItemDTO();
+            itemDTO.setId(item.getId());
+            itemDTO.setItemName(item.getItemName());
+            itemDTO.setItemDesc(item.getItemDesc());
+            itemDTO.setItemImg(item.getItemImg());
+            itemDTO.setItemStock(item.getItemStock());
+            itemDTO.setItemOriginPrice(item.getItemOriginPrice());
+            itemDTO.setItemBrand(item.getItemBrand());
+            itemDTO.setItemPrice(item.getItemSale());
+            itemDTOList.add(itemDTO);
+        }
+        return itemDTOList;
+    }
 }
