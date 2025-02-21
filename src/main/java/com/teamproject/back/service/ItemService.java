@@ -164,7 +164,6 @@ public class ItemService {
                     .itemImg(itemDto.getItemImg())
                     .itemStock(itemDto.getItemStock())
                     .itemOriginPrice(itemDto.getItemOriginPrice())
-                    .itemPrice(itemDto.getItemPrice())
                     .itemBrand(itemDto.getItemBrand())
                     .category(itemDto.getCategory())
                     .build();
@@ -177,7 +176,6 @@ public class ItemService {
                 .itemImg(itemDto.getItemImg())
                 .itemStock(itemDto.getItemStock())
                 .itemOriginPrice(itemDto.getItemOriginPrice())
-                .itemPrice(itemDto.getItemPrice())
                 .itemBrand(itemDto.getItemBrand())
                 .category(itemDto.getCategory())
                 .build();
@@ -204,8 +202,7 @@ public class ItemService {
             itemDTO.setItemStock(item.getItemStock());
             itemDTO.setItemOriginPrice(item.getItemOriginPrice());
             itemDTO.setItemBrand(item.getItemBrand());
-//            itemDTO.setItemRating(item.getItemRating());
-//            itemDTO.setItemPrice(item.getItemSale());
+            itemDTO.setItemPrice(item.getItemPrice());
             itemDTO.setTotalData(totalCount);
             itemDTOList.add(itemDTO);
         }
@@ -225,9 +222,43 @@ public class ItemService {
             itemDTO.setItemStock(item.getItemStock());
             itemDTO.setItemOriginPrice(item.getItemOriginPrice());
             itemDTO.setItemBrand(item.getItemBrand());
-//            itemDTO.setItemRating(item.getItemRating());
-//            itemDTO.setItemPrice(item.getItemSale());
+            itemDTO.setItemPrice(item.getItemPrice());
             itemDTO.setTotalData(totalCount);
+            itemDTOList.add(itemDTO);
+        }
+        return itemDTOList;
+    }
+
+    public ItemDTO findByItemId(int id) {
+        Item item = itemRepository.findByItemId(id);
+        if(item != null){
+            ItemDTO itemDTO = new ItemDTO();
+            itemDTO.setId(item.getId());
+            itemDTO.setItemName(item.getItemName());
+            itemDTO.setItemDesc(item.getItemDesc());
+            itemDTO.setItemImg(item.getItemImg());
+            itemDTO.setItemStock(item.getItemStock());
+            itemDTO.setItemOriginPrice(item.getItemOriginPrice());
+            itemDTO.setItemBrand(item.getItemBrand());
+            itemDTO.setItemPrice(item.getItemPrice());
+            return itemDTO;
+        }
+        return null;
+    }
+
+    public List<ItemDTO> findByItemName(String debouncedSearch) {
+        List<Item> itemList = itemRepository.findByItemName(debouncedSearch);
+        List<ItemDTO> itemDTOList = new ArrayList<>();
+        for (Item item : itemList) {
+            ItemDTO itemDTO = new ItemDTO();
+            itemDTO.setId(item.getId());
+            itemDTO.setItemName(item.getItemName());
+            itemDTO.setItemDesc(item.getItemDesc());
+            itemDTO.setItemImg(item.getItemImg());
+            itemDTO.setItemStock(item.getItemStock());
+            itemDTO.setItemOriginPrice(item.getItemOriginPrice());
+            itemDTO.setItemBrand(item.getItemBrand());
+            itemDTO.setItemPrice(item.getItemPrice());
             itemDTOList.add(itemDTO);
         }
         return itemDTOList;

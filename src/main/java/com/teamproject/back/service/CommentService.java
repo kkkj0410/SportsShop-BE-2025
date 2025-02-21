@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -135,4 +137,8 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    public Map<String,Object> findByRatingAndCommentCount(long id) {
+        Map<String, Object> map = commentRepository.findByRatingAndCommentCount((Long)id);
+        return map;
+    }
 }

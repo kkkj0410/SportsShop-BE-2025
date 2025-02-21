@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -51,4 +52,12 @@ public class HomeController {
 //        return Res
 //        ponseEntity.ok(items); //전체 상품이니까
 //    }
+
+    @GetMapping("/api/search/{debouncedSearch}")
+    public ResponseEntity<List<ItemDTO>> searchController(@PathVariable String debouncedSearch){
+//        System.out.println(debouncedSearch);
+//        log.error("searchData:{}",debouncedSearch);
+        List<ItemDTO> itemDTOList = itemService.findByItemName(debouncedSearch);
+        return ResponseEntity.ok(itemDTOList);
+    }
 }
