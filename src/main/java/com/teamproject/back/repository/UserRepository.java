@@ -90,6 +90,27 @@ public class UserRepository{
 
     }
 
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    public int patchUsername(String email, String username) {
+        String encryptedEmail = AesUtil.encrypt(email);
+
+        String jpql = "UPDATE Users u SET " +
+                "u.username = :username " +
+                "WHERE u.email = :email";
+
+        int count = entityManager.createQuery(jpql)
+                .setParameter("username", AesUtil.encrypt(username))
+                .setParameter("email", encryptedEmail)
+                .executeUpdate();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        return  count;
+    }
+
+
     @Transactional(readOnly = true)
     public List<Users> findAllUsers(int page, int size) {
         return entityManager.createQuery("SELECT u from Users u")

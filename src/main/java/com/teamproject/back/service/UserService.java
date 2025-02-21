@@ -57,6 +57,11 @@ public class UserService {
         return userRepository.patchUser(userDtoToUser(userDto));
     }
 
+    public int patchUsername(String username){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.patchUsername(email, username);
+    }
+
     public int patchPassword(String password){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.patchPassword(email, passwordEncoder.encode(password));
