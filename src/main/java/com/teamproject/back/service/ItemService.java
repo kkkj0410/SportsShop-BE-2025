@@ -36,8 +36,48 @@ public class ItemService {
         this.gcsImage = gcsImage;
     }
 
-    public List<ItemFormResponseDto> findItemList(int size, int page){
+    public List<ItemFormResponseDto> findItemListByNew(int size, int page){
         List<Item> itemList = itemRepository.findItemsWithPagination(size, page);
+        if(itemList == null){
+            log.info("상품 조회 실패");
+            return null;
+        }
+
+        return itemListToItemFormResponseDtoList(itemList);
+    }
+
+    public List<ItemFormResponseDto> findItemListByPriceDesc(int size, int page){
+        List<Item> itemList = itemRepository.findItemsSortedByPriceDesc(size, page);
+        if(itemList == null){
+            log.info("상품 조회 실패");
+            return null;
+        }
+
+        return itemListToItemFormResponseDtoList(itemList);
+    }
+
+    public List<ItemFormResponseDto> findItemListByPriceAsc(int size, int page){
+        List<Item> itemList = itemRepository.findItemsSortedByPriceAsc(size, page);
+        if(itemList == null){
+            log.info("상품 조회 실패");
+            return null;
+        }
+
+        return itemListToItemFormResponseDtoList(itemList);
+    }
+
+    public List<ItemFormResponseDto> findItemsSortedByRecommendDesc(int size, int page){
+        List<Item> itemList = itemRepository.findItemsSortedByRecommendDesc(size, page);
+        if(itemList == null){
+            log.info("상품 조회 실패");
+            return null;
+        }
+
+        return itemListToItemFormResponseDtoList(itemList);
+    }
+
+    public List<ItemFormResponseDto> findItemsSortedByComment(int size, int page){
+        List<Item> itemList = itemRepository.findItemsSortedByComment(size, page);
         if(itemList == null){
             log.info("상품 조회 실패");
             return null;
@@ -123,10 +163,14 @@ public class ItemService {
 
 
     private ItemFormResponseDto itemToItemFormResponseDto(Item item){
-        Integer averageRating = commentRepository.findAverageRating(item.getId());
+        Integer averageRating = item.getAverageRating();
         if(averageRating == null){
-            log.info("평점 평균 집계 실패");
+            averageRating = commentRepository.findAverageRating(item.getId());
+            if(averageRating == null){
+                log.info("평점 평균 집계 실패");
+            }
         }
+
 
         if(item != null){
             return ItemFormResponseDto.builder()
@@ -135,6 +179,7 @@ public class ItemService {
                     .itemDesc(item.getItemDesc())
                     .itemImg(item.getItemImg())
                     .averageRating(averageRating)
+                    .commentCount(item.getCommentCount())
                     .itemStock(item.getItemStock())
                     .itemOriginPrice(item.getItemOriginPrice())
                     .itemPrice(item.getItemPrice())
@@ -164,6 +209,7 @@ public class ItemService {
                     .itemImg(itemDto.getItemImg())
                     .itemStock(itemDto.getItemStock())
                     .itemOriginPrice(itemDto.getItemOriginPrice())
+                    .itemPrice(itemDto.getItemPrice())
                     .itemBrand(itemDto.getItemBrand())
                     .category(itemDto.getCategory())
                     .build();
@@ -176,6 +222,7 @@ public class ItemService {
                 .itemImg(itemDto.getItemImg())
                 .itemStock(itemDto.getItemStock())
                 .itemOriginPrice(itemDto.getItemOriginPrice())
+                .itemPrice(itemDto.getItemPrice())
                 .itemBrand(itemDto.getItemBrand())
                 .category(itemDto.getCategory())
                 .build();

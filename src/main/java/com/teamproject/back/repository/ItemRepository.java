@@ -3,6 +3,7 @@ package com.teamproject.back.repository;
 import com.teamproject.back.entity.Item;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -10,9 +11,11 @@ import org.springframework.stereotype.Repository;
 import jakarta.persistence.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@Slf4j
 public class ItemRepository {
 
 
@@ -45,19 +48,233 @@ public class ItemRepository {
         }
     }
 
+    //최신순
     @Transactional(readOnly = true)
     public List<Item> findItemsWithPagination(int size, int page){
-        String jpql = "SELECT i FROM Item i";
+//        String jpql = "SELECT i FROM Item i";
+        String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
+                "FROM Item i " +
+                "LEFT JOIN Comment c ON i.id = c.item.id " +
+                "GROUP BY i.id";
 
         try{
-            return entityManager.createQuery(jpql, Item.class)
+            List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
                     .setFirstResult((page-1) * size)
                     .setMaxResults(size)
                     .getResultList();
+
+            List<Item> items = new ArrayList<>();
+            for(Object[] result : results){
+                Item item = (Item) result[0];
+                item.setAverageRating((int) ((double)result[1]));
+                item.setCommentCount((int) (long)result[2]);
+                items.add(item);
+            }
+
+            if(items.isEmpty()){
+                return null;
+            }
+            return items;
         }catch (NoResultException e) {
             return null;
         }
     }
+
+    //가격 오름차순
+    @Transactional(readOnly = true)
+    public List<Item> findItemsSortedByPriceAsc(int size, int page){
+//        String jpql = "SELECT i FROM Item i " +
+//                "ORDER BY i.itemPrice ASC";
+
+
+        String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
+                      "FROM Item i " +
+                      "LEFT JOIN Comment c ON i.id = c.item.id " +
+                      "GROUP BY i.id " +
+                      "ORDER BY i.itemPrice ASC";
+
+        try{
+            List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
+                    .setFirstResult((page-1) * size)
+                    .setMaxResults(size)
+                    .getResultList();
+
+            List<Item> items = new ArrayList<>();
+            for(Object[] result : results){
+                Item item = (Item) result[0];
+                item.setAverageRating((int) ((double)result[1]));
+                item.setCommentCount((int) (long)result[2]);
+                items.add(item);
+            }
+
+            if(items.isEmpty()){
+                return null;
+            }
+            return items;
+        }catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    //가격 내림차순
+    @Transactional(readOnly = true)
+    public List<Item> findItemsSortedByPriceDesc(int size, int page){
+//        String jpql = "SELECT i FROM Item i " +
+//                "ORDER BY i.itemPrice DESC";
+
+        String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
+                       "FROM Item i " +
+                       "LEFT JOIN Comment c ON i.id = c.item.id " +
+                       "GROUP BY i.id " +
+                       "ORDER BY i.itemPrice DESC";
+
+        try{
+            List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
+                    .setFirstResult((page-1) * size)
+                    .setMaxResults(size)
+                    .getResultList();
+
+            List<Item> items = new ArrayList<>();
+            for(Object[] result : results){
+                Item item = (Item) result[0];
+                item.setAverageRating((int) ((double)result[1]));
+                item.setCommentCount((int) (long)result[2]);
+                items.add(item);
+            }
+
+            if(items.isEmpty()){
+                return null;
+            }
+            return items;
+        }catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Item> findItemsSortedByRecommendDesc(int size, int page) {
+        String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
+                      "FROM Item i " +
+                      "LEFT JOIN Comment c ON i.id = c.item.id " +
+                      "GROUP BY i.id " +
+                      "ORDER BY " +
+                      "CASE WHEN AVG(c.rating) IS NULL THEN 1 ELSE 0 END, " +
+                      "AVG(c.rating) DESC";
+
+
+        try{
+            List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
+                                    .setFirstResult((page-1) * size)
+                                    .setMaxResults(size)
+                                    .getResultList();
+
+            List<Item> items = new ArrayList<>();
+            for(Object[] result : results){
+                Item item = (Item) result[0];
+                item.setAverageRating((int) ((double)result[1]));
+                item.setCommentCount((int) (long)result[2]);
+                items.add(item);
+            }
+
+            if(items.isEmpty()){
+                return null;
+            }
+            return items;
+        }catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Item> findItemsSortedByComment(int size, int page){
+        String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
+                      "FROM Item i " +
+                      "LEFT JOIN Comment c " +
+                      "ON i.id = c.item.id " +
+                      "GROUP BY i.id " +
+                      "ORDER BY COUNT(c.id) DESC";
+
+        try{
+            List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
+                    .setFirstResult((page-1) * size)
+                    .setMaxResults(size)
+                    .getResultList();
+
+            List<Item> items = new ArrayList<>();
+            for(Object[] result : results){
+                Item item = (Item) result[0];
+                item.setAverageRating((int) ((double)result[1]));
+                item.setCommentCount((int) (long)result[2]);
+                items.add(item);
+            }
+
+            if(items.isEmpty()){
+                return null;
+            }
+            return items;
+        }catch (NoResultException e) {
+            return null;
+        }
+    }
+
+
+    //추천순
+//    @Transactional(readOnly = true)
+//    public List<Item> findItemsSortedByRecommendDesc(int size, int page){
+//
+//        //"SELECT i, AVG(c.rating) "으로 해서 별도의 c.rating 작업없이 바로 평균 평점 가져오면 좋을듯
+//        String recommendDescJqpl = "SELECT i " +
+//                                   "FROM Item i " +
+//                                   "JOIN Comment c " +
+//                                   "ON i.id = c.item.id " +
+//                                   "GROUP BY i.id " +
+//                                   "ORDER BY AVG(c.rating) DESC";
+//
+//        String noRecommendJpql = "SELECT i " +
+//                                 "FROM Item i " +
+//                                 "LEFT JOIN Comment c " +
+//                                 "ON i.id =  c.item.id " +
+//                                 "WHERE c.item.id IS NULL";
+//
+//
+//
+//        List<Item> itemListByRecommendDesc = null;
+//        List<Item> itemListByNoRecommend = null;
+//        try {
+//            itemListByRecommendDesc = entityManager.createQuery(recommendDescJqpl, Item.class)
+//                    .setFirstResult((page - 1) * size)
+//                    .setMaxResults(size)
+//                    .getResultList();
+//        }
+//        catch (NoResultException e){
+//            log.info("no recommend item");
+//        }
+//
+//        try{
+//            itemListByNoRecommend = entityManager.createQuery(noRecommendJpql, Item.class)
+//                                   .setFirstResult((page-1) * size)
+//                                   .setMaxResults(size)
+//                                   .getResultList();
+//        }catch (NoResultException e) {
+//            log.info("no not recommend item");
+//        }
+//
+//        List<Item> resultList = new ArrayList<>();
+//        if (itemListByRecommendDesc != null) {
+//            resultList.addAll(itemListByRecommendDesc);
+//        }
+//        if (itemListByNoRecommend != null) {
+//            resultList.addAll(itemListByNoRecommend);
+//        }
+//
+//        if(resultList.isEmpty()){
+//            return null;
+//        }
+//
+//        return resultList;
+//    }
+
+
 
     @Transactional
     public int deleteById(int id){
