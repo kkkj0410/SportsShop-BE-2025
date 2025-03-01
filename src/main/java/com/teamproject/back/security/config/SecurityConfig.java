@@ -61,7 +61,8 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/api/user/{email}"),
                                 new AntPathRequestMatcher("/api/login/**"),
                                 new AntPathRequestMatcher("/api/search/**"),
-                                new AntPathRequestMatcher("/api/login/**")
+                                new AntPathRequestMatcher("/api/login/**"),
+                                new AntPathRequestMatcher("/api/search/**")
 
                         ).permitAll()
                         .requestMatchers("/security/user").hasRole("USER")

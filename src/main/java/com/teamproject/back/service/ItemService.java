@@ -33,8 +33,48 @@ public class ItemService {
         this.gcsImage = gcsImage;
     }
 
-    public List<ItemFormResponseDto> findItemList(int size, int page){
+    public List<ItemFormResponseDto> findItemListByNew(int size, int page){
         List<Item> itemList = itemRepository.findItemsWithPagination(size, page);
+        if(itemList == null){
+            log.info("상품 조회 실패");
+            return null;
+        }
+
+        return itemListToItemFormResponseDtoList(itemList);
+    }
+
+    public List<ItemFormResponseDto> findItemListByPriceDesc(int size, int page){
+        List<Item> itemList = itemRepository.findItemsSortedByPriceDesc(size, page);
+        if(itemList == null){
+            log.info("상품 조회 실패");
+            return null;
+        }
+
+        return itemListToItemFormResponseDtoList(itemList);
+    }
+
+    public List<ItemFormResponseDto> findItemListByPriceAsc(int size, int page){
+        List<Item> itemList = itemRepository.findItemsSortedByPriceAsc(size, page);
+        if(itemList == null){
+            log.info("상품 조회 실패");
+            return null;
+        }
+
+        return itemListToItemFormResponseDtoList(itemList);
+    }
+
+    public List<ItemFormResponseDto> findItemsSortedByRecommendDesc(int size, int page){
+        List<Item> itemList = itemRepository.findItemsSortedByRecommendDesc(size, page);
+        if(itemList == null){
+            log.info("상품 조회 실패");
+            return null;
+        }
+
+        return itemListToItemFormResponseDtoList(itemList);
+    }
+
+    public List<ItemFormResponseDto> findItemsSortedByComment(int size, int page){
+        List<Item> itemList = itemRepository.findItemsSortedByComment(size, page);
         if(itemList == null){
             log.info("상품 조회 실패");
             return null;
@@ -105,10 +145,14 @@ public class ItemService {
 
 
     private ItemFormResponseDto itemToItemFormResponseDto(Item item){
-        Integer averageRating = commentRepository.findAverageRating(item.getId());
+        Integer averageRating = item.getAverageRating();
         if(averageRating == null){
-            log.info("평점 평균 집계 실패");
+            averageRating = commentRepository.findAverageRating(item.getId());
+            if(averageRating == null){
+                log.info("평점 평균 집계 실패");
+            }
         }
+
 
         if(item != null){
             return ItemFormResponseDto.builder()
@@ -117,6 +161,7 @@ public class ItemService {
                     .itemDesc(item.getItemDesc())
                     .itemImg(item.getItemImg())
                     .averageRating(averageRating)
+                    .commentCount(item.getCommentCount())
                     .itemStock(item.getItemStock())
                     .itemOriginPrice(item.getItemOriginPrice())
                     .itemBrand(item.getItemBrand())
@@ -224,7 +269,38 @@ public class ItemService {
         return itemDTOList;
     }
 
-    public List<ItemDTO> findByItemName(String debouncedSearch) {
+    public ItemDTO findByItemId(int id) {
+        Item item = itemRepository.findByItemId(id);
+        if(item != null){
+            ItemDTO itemDTO = new ItemDTO();
+            itemDTO.setId(item.getId());
+            itemDTO.setItemName(item.getItemName());
+            itemDTO.setItemDesc(item.getItemDesc());
+            itemDTO.setItemImg(item.getItemImg());
+            itemDTO.setItemStock(item.getItemStock());
+            itemDTO.setItemOriginPrice(item.getItemOriginPrice());
+            itemDTO.setItemBrand(item.getItemBrand());
+            itemDTO.setItemPrice(item.getItemPrice());
+            return itemDTO;
+        }
         return null;
+    }
+
+    public List<ItemDTO> findByItemName(String debouncedSearch) {
+        List<Item> itemList = itemRepository.findByItemName(debouncedSearch);
+        List<ItemDTO> itemDTOList = new ArrayList<>();
+        for (Item item : itemList) {
+            ItemDTO itemDTO = new ItemDTO();
+            itemDTO.setId(item.getId());
+            itemDTO.setItemName(item.getItemName());
+            itemDTO.setItemDesc(item.getItemDesc());
+            itemDTO.setItemImg(item.getItemImg());
+            itemDTO.setItemStock(item.getItemStock());
+            itemDTO.setItemOriginPrice(item.getItemOriginPrice());
+            itemDTO.setItemBrand(item.getItemBrand());
+            itemDTO.setItemPrice(item.getItemPrice());
+            itemDTOList.add(itemDTO);
+        }
+        return itemDTOList;
     }
 }

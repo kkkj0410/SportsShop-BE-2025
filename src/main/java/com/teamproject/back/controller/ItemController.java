@@ -60,9 +60,32 @@ public class ItemController {
     }
 
     @GetMapping("/item")
-    public ResponseEntity<?> itemGet(@RequestParam("size") int size, @RequestParam("page") int page){
+    public ResponseEntity<?> itemGet(
+            @RequestParam("size") int size,
+            @RequestParam("page") int page,
+            @RequestParam(value = "sort", defaultValue = "new") String sort){
         //page = page-1 => page는 0부터 시작
-        List<ItemFormResponseDto> itemDtoList = itemService.findItemList(size,page);
+        List<ItemFormResponseDto> itemDtoList = null;
+        if(sort.equals("new")){
+            itemDtoList = itemService.findItemListByNew(size,page);
+        }
+        else if(sort.equals("expensive")){
+            itemDtoList = itemService.findItemListByPriceDesc(size,page);
+        }
+        else if(sort.equals("cheap")){
+            itemDtoList = itemService.findItemListByPriceAsc(size,page);
+        }
+        else if(sort.equals("recommend")){
+            itemDtoList = itemService.findItemsSortedByRecommendDesc(size, page);
+        }
+        else if(sort.equals("review")){
+            itemDtoList = itemService.findItemsSortedByComment(size, page);
+        }
+        else{
+            itemDtoList = itemService.findItemListByNew(size,page);
+        }
+
+
         if(itemDtoList != null){
             return ResponseEntity.ok(itemDtoList);
         }
@@ -81,5 +104,7 @@ public class ItemController {
 
         return ResponseEntity.badRequest().body("상품 조회에 실패 했습니다.");
     }
+
+
 
 }

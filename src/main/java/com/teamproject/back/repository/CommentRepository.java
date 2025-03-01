@@ -198,7 +198,22 @@ public class CommentRepository {
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<Long> findIdsByItemId(Integer itemId){
+        String jpql = "SELECT c.id FROM Comment c " +
+                      "JOIN c.item i " +
+                      "WHERE c.item.id = :itemId";
 
+
+        return em.createQuery(jpql, Long.class)
+                .setParameter("itemId", itemId)
+                .getResultList();
+
+    }
+
+
+
+    @Transactional(readOnly = true)
     public Map<String, Object> findByRatingAndCommentCount(Long id) {
         return null;
     }

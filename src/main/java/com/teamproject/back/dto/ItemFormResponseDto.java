@@ -22,6 +22,8 @@ public class ItemFormResponseDto {
 
     private Integer averageRating;
 
+    private Integer commentCount;
+
     private int itemStock;
 
     private int itemOriginPrice;

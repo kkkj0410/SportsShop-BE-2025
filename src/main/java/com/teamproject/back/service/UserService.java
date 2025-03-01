@@ -4,7 +4,7 @@ import com.teamproject.back.dto.UserDto;
 import com.teamproject.back.entity.Role;
 import com.teamproject.back.entity.Users;
 import com.teamproject.back.repository.UserRepository;
-import com.teamproject.back.util.AesUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -70,32 +70,6 @@ public class UserService {
     public int patchPassword(String email, String password){
         return userRepository.patchPassword(email, passwordEncoder.encode(password));
     }
-
-//    private Users encryptUsers(Users users){
-//        return Users.builder()
-//                .id(users.getId())
-//                .email(users.getEmail())
-//                .password(users.getPassword())
-//                .username(users.getUsername())
-//                .phoneNumber(users.getPhoneNumber())
-//                .role(users.getRole())
-//                .birthday(users.getBirthday())
-//                .build();
-//
-//    }
-//
-//    private Users decryptUsers(Users users){
-//        return Users.builder()
-//                .id(users.getId())
-//                .email(users.getEmail())
-//                .password(users.getPassword())
-//                .username(users.getUsername())
-//                .phoneNumber(users.getPhoneNumber())
-//                .role(users.getRole())
-//                .birthday(users.getBirthday())
-//                .build();
-//
-//    }
 
 
     private UserDto usersToUserDto(Users users){

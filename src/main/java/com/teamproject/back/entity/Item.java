@@ -45,4 +45,7 @@ public class Item {
 
     @Transient // 이 필드는 DB에 저장되지 않음
     private Integer averageRating;
+
+    @Transient // 이 필드는 DB에 저장되지 않음
+    private Integer commentCount;
 }
