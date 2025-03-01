@@ -37,15 +37,29 @@ public class ItemRepository {
 
     @Transactional(readOnly = true)
     public Item findById(int id){
-        String jpql = "SELECT i FROM Item i WHERE i.id = :id";
+//        String jpql = "SELECT i FROM Item i WHERE i.id = :id";
 
-        try {
-            return entityManager.createQuery(jpql, Item.class)
+        String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
+                      "FROM Item i " +
+                      "LEFT JOIN Comment c " +
+                      "ON i.id = c.item.id " +
+                      "WHERE i.id = :id " +
+                      "GROUP BY i.id";
+
+        try{
+            Object[] result = entityManager.createQuery(jpql, Object[].class)
                     .setParameter("id", id)
                     .getSingleResult();
-        } catch (NoResultException e) {
+
+            Item item = (Item) result[0];
+            item.setAverageRating((int) ((double)result[1]));
+            item.setCommentCount((int) (long)result[2]);
+
+            return item;
+        }catch (NoResultException e) {
             return null;
         }
+
     }
 
     //최신순
