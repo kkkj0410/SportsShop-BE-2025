@@ -46,6 +46,13 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/api/auth/**"),
+                                new AntPathRequestMatcher("/signup"),
+                                new AntPathRequestMatcher("/ws/chat/**"),
+                                new AntPathRequestMatcher("/api/signup"),
+                                new AntPathRequestMatcher("/image"),
+                                new AntPathRequestMatcher("/api/category"),
+                                new AntPathRequestMatcher("/api/header"),
+                                new AntPathRequestMatcher("/api/chat/**"),
                                 new AntPathRequestMatcher("/api/home"),
                                 new AntPathRequestMatcher("/ws/chat/**"),
                                 new AntPathRequestMatcher("/api/signup"),
@@ -53,7 +60,9 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/api/email/**"),
                                 new AntPathRequestMatcher("/api/user/{email}"),
                                 new AntPathRequestMatcher("/api/login/**"),
-                                new AntPathRequestMatcher("/api/search/**")
+                                new AntPathRequestMatcher("/api/search/**"),
+                                new AntPathRequestMatcher("/api/login/**")
+
                         ).permitAll()
                         .requestMatchers("/security/user").hasRole("USER")
                         .requestMatchers("/security/admin").hasRole("ADMIN")

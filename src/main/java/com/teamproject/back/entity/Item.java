@@ -16,8 +16,6 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    //****(1.17)******
-    // int id -> Integer id
 
     private String itemName;
 
@@ -27,7 +25,7 @@ public class Item {
 
     private int itemStock;
 
-    private int itemSale;
+    private int itemPrice;
 
     private int itemOriginPrice;
 
@@ -42,10 +40,8 @@ public class Item {
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Cart> carts;
 
-    //***1.20 추가***
     @OneToMany(mappedBy = "item",fetch = FetchType.LAZY)
     private List<Comment> comments;
-
 
     @Transient // 이 필드는 DB에 저장되지 않음
     private Integer averageRating;

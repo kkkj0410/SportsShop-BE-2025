@@ -28,6 +28,8 @@ public class ItemFormRequestDto {
 
     private int itemOriginPrice;
 
+    private int itemPrice;
+
     private String itemBrand;
 
     private Category category;

@@ -51,7 +51,7 @@ public class ItemRepository {
 
         try{
             return entityManager.createQuery(jpql, Item.class)
-                    .setFirstResult(page)
+                    .setFirstResult((page-1) * size)
                     .setMaxResults(size)
                     .getResultList();
         }catch (NoResultException e) {

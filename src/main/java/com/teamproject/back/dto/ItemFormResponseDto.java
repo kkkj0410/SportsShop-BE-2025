@@ -26,6 +26,8 @@ public class ItemFormResponseDto {
 
     private int itemOriginPrice;
 
+    private int itemPrice;
+
     private String itemBrand;
 
     private Category category;

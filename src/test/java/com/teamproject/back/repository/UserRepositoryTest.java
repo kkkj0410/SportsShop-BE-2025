@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
+
 class UserRepositoryTest {
 
     UserRepository userRepository;
@@ -30,7 +30,7 @@ class UserRepositoryTest {
                 .email("email1")
                 .password("password1")
                 .username("username1")
-                .phoneNumber("phoneNumber1")
+//                .phoneNumber("phoneNumber1")
                 .role(Role.USER)
                 .birthday(LocalDate.of(2002,6,23))
                 .build();
@@ -42,7 +42,7 @@ class UserRepositoryTest {
         assertEquals(user.getEmail(),findUser.getEmail());
         assertEquals(user.getPassword(),findUser.getPassword());
         assertEquals(user.getUsername(),findUser.getUsername());
-        assertEquals(user.getPhoneNumber(),findUser.getPhoneNumber());
+//        assertEquals(user.getPhoneNumber(),findUser.getPhoneNumber());
         assertEquals(user.getBirthday(),findUser.getBirthday());
     }
 
@@ -53,7 +53,7 @@ class UserRepositoryTest {
                 .email("email1")
                 .password("password1")
                 .username("username1")
-                .phoneNumber("phoneNumber1")
+//                .phoneNumber("phoneNumber1")
                 .role(Role.USER)
                 .birthday(LocalDate.of(2002,6,23))
                 .build();
@@ -74,7 +74,7 @@ class UserRepositoryTest {
                 .email("email1")
                 .password("password1")
                 .username("username1")
-                .phoneNumber("phoneNumber1")
+//                .phoneNumber("phoneNumber1")
                 .role(Role.USER)
                 .birthday(LocalDate.of(2002,6,23))
                 .build();
@@ -83,7 +83,7 @@ class UserRepositoryTest {
         Users updatedUser =  Users.builder()
                 .email("email1")
                 .username("updatedUsername")
-                .phoneNumber("updatedNumber")
+//                .phoneNumber("updatedNumber")
                 .role(Role.USER)
                 .birthday(LocalDate.of(2023,9,20))
                 .build();
@@ -93,7 +93,7 @@ class UserRepositoryTest {
         //then
         Users findUser = userRepository.findByEmail(user.getEmail());
         assertEquals(updatedUser.getUsername(),findUser.getUsername());
-        assertEquals(updatedUser.getPhoneNumber(),findUser.getPhoneNumber());
+//        assertEquals(updatedUser.getPhoneNumber(),findUser.getPhoneNumber());
         assertEquals(updatedUser.getBirthday(),findUser.getBirthday());
     }
 
@@ -104,7 +104,7 @@ class UserRepositoryTest {
                 .email("email1")
                 .password("password1")
                 .username("username1")
-                .phoneNumber("phoneNumber1")
+//                .phoneNumber("phoneNumber1")
                 .role(Role.USER)
                 .birthday(LocalDate.of(2002,6,23))
                 .build();
@@ -124,7 +124,7 @@ class UserRepositoryTest {
                 .email("email1")
                 .password("password1")
                 .username("username1")
-                .phoneNumber("phoneNumber1")
+//                .phoneNumber("phoneNumber1")
                 .role(Role.USER)
                 .birthday(LocalDate.of(2002,6,23))
                 .build();
@@ -145,7 +145,7 @@ class UserRepositoryTest {
                 .email("email1")
                 .password("password1")
                 .username("username1")
-                .phoneNumber("phoneNumber1")
+//                .phoneNumber("phoneNumber1")
                 .role(Role.USER)
                 .birthday(LocalDate.of(2002,6,23))
                 .build();

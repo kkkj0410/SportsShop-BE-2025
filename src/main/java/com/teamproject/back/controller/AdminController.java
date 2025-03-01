@@ -73,11 +73,6 @@ public class AdminController {
         public ResponseEntity<Map<String,Object>> adminFindItemDetail (@PathVariable int id){
             Map<String,Object> map = new HashMap<>();
             log.info("아이템 id{}",id);
-            ItemDTO itemDTO  = itemService.findByItemId(id);
-            Map<String,Object> result = commentService.findByRatingAndCommentCount((long) id);
-            map.put("itemData",itemDTO);
-            map.put("commentCount",result.get("commentCount"));
-            map.put("ratingAvg",result.get("ratingAvg"));
             return ResponseEntity.ok(map);
         }
 

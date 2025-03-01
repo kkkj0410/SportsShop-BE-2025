@@ -19,8 +19,7 @@ public class UserDto {
     private String email;
     private String password;
     private String username;
-    //010-1234-5678
-    private String phoneNumber;
+//    private String phoneNumber;
     private Role role;
 
     private LocalDate birthday;

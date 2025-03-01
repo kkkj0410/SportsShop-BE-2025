@@ -4,8 +4,8 @@ import com.teamproject.back.dto.UserDto;
 import com.teamproject.back.entity.Role;
 import com.teamproject.back.entity.Users;
 import com.teamproject.back.repository.UserRepository;
+import com.teamproject.back.util.AesUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -57,10 +57,46 @@ public class UserService {
         return userRepository.patchUser(userDtoToUser(userDto));
     }
 
+    public int patchUsername(String username){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.patchUsername(email, username);
+    }
+
     public int patchPassword(String password){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.patchPassword(email, passwordEncoder.encode(password));
     }
+
+    public int patchPassword(String email, String password){
+        return userRepository.patchPassword(email, passwordEncoder.encode(password));
+    }
+
+//    private Users encryptUsers(Users users){
+//        return Users.builder()
+//                .id(users.getId())
+//                .email(users.getEmail())
+//                .password(users.getPassword())
+//                .username(users.getUsername())
+//                .phoneNumber(users.getPhoneNumber())
+//                .role(users.getRole())
+//                .birthday(users.getBirthday())
+//                .build();
+//
+//    }
+//
+//    private Users decryptUsers(Users users){
+//        return Users.builder()
+//                .id(users.getId())
+//                .email(users.getEmail())
+//                .password(users.getPassword())
+//                .username(users.getUsername())
+//                .phoneNumber(users.getPhoneNumber())
+//                .role(users.getRole())
+//                .birthday(users.getBirthday())
+//                .build();
+//
+//    }
+
 
     private UserDto usersToUserDto(Users users){
         return UserDto.builder()
@@ -68,7 +104,6 @@ public class UserService {
                 .email(users.getEmail())
                 .password(users.getPassword())
                 .username(users.getUsername())
-                .phoneNumber(users.getPhoneNumber())
                 .role(users.getRole())
                 .birthday(users.getBirthday())
                 .build();
@@ -80,7 +115,6 @@ public class UserService {
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
                 .username(userDto.getUsername())
-                .phoneNumber(userDto.getPhoneNumber())
                 .role(userDto.getRole())
                 .birthday(userDto.getBirthday())
                 .build();

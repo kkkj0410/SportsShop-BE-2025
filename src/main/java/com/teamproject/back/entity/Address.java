@@ -16,6 +16,9 @@ public class Address {
 
     private String zipcode;
 
+    //***add(2.19)***
+    private String phoneNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Users users;

@@ -62,7 +62,7 @@ public class ItemController {
     @GetMapping("/item")
     public ResponseEntity<?> itemGet(@RequestParam("size") int size, @RequestParam("page") int page){
         //page = page-1 => page는 0부터 시작
-        List<ItemFormResponseDto> itemDtoList = itemService.findItemList(size,page-1);
+        List<ItemFormResponseDto> itemDtoList = itemService.findItemList(size,page);
         if(itemDtoList != null){
             return ResponseEntity.ok(itemDtoList);
         }
