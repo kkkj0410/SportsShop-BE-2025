@@ -371,9 +371,42 @@ public class ItemRepository {
         return entityManager.find(Item.class, id);
     }
     //메인화면에서 검색을 했을때
+//    public List<Item> findByItemName(String debouncedSearch) {
+//        return entityManager.createQuery("SELECT I FROM Item  I WHERE I.itemName LIKE :itemName ",Item.class)
+//                .setParameter("itemName", "%"+debouncedSearch+"%")
+//                .getResultList();
+//    }
+
+    //(3.3 - 상품 평점 + 리뷰 개수 조회 추가)
     public List<Item> findByItemName(String debouncedSearch) {
-        return entityManager.createQuery("SELECT I FROM Item  I WHERE I.itemName LIKE :itemName ",Item.class)
-                .setParameter("itemName", "%"+debouncedSearch+"%")
-                .getResultList();
+        String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
+                      "FROM Item i " +
+                      "LEFT JOIN Comment c " +
+                      "ON i.id = c.item.id " +
+                      "WHERE i.itemName " +
+                      "LIKE :itemName " +
+                      "GROUP BY i.id";
+
+
+        try{
+            List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
+                    .setParameter("itemName", "%"+debouncedSearch+"%")
+                    .getResultList();
+
+            List<Item> items = new ArrayList<>();
+            for(Object[] result : results){
+                Item item = (Item) result[0];
+                item.setAverageRating((int) ((double)result[1]));
+                item.setCommentCount((int) (long)result[2]);
+                items.add(item);
+            }
+
+
+            return items;
+        }catch (Exception e) {
+            log.info("상품 목록 조회 실패");
+            return new ArrayList<>();
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 package com.teamproject.back.controller;
 
 import com.teamproject.back.dto.ItemDTO;
+import com.teamproject.back.dto.ItemFormResponseDto;
 import com.teamproject.back.dto.UserDto;
 import com.teamproject.back.entity.Item;
 import com.teamproject.back.service.ItemService;
@@ -53,11 +54,11 @@ public class HomeController {
 //        ponseEntity.ok(items); //전체 상품이니까
 //    }
 
+    //(3.3) - 리뷰, 평점 추가 조회
     @GetMapping("/api/search/{debouncedSearch}")
-    public ResponseEntity<List<ItemDTO>> searchController(@PathVariable String debouncedSearch){
-//        System.out.println(debouncedSearch);
-//        log.error("searchData:{}",debouncedSearch);
-        List<ItemDTO> itemDTOList = itemService.findByItemName(debouncedSearch);
-        return ResponseEntity.ok(itemDTOList);
+    public ResponseEntity<List<ItemFormResponseDto>> searchController(@PathVariable String debouncedSearch){
+        List<ItemFormResponseDto> itemFormResponseDtoList = itemService.findByItemName(debouncedSearch);
+
+        return ResponseEntity.ok(itemFormResponseDtoList);
     }
 }
