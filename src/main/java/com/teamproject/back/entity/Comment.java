@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class Comment {
 
     private String content;
 
-    private Integer rating;
+    private Double rating;
 
     private LocalDateTime created_date;
 
@@ -52,7 +53,12 @@ public class Comment {
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
     private List<Likes> likes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    @BatchSize(size = 5)
+    private List<CommentImage> commentImages = new ArrayList<>();
 
+    @Transient
+    private Long parentCommentId;
 
     @PrePersist
     public void prePersist() {
@@ -94,7 +100,6 @@ public class Comment {
         return "Comment{" +
                 "id=" + id +
                 ", content='" + content + '\'' +
-                ", likes=" + likes +
                 ", created_date=" + created_date +
                 '}';
     }

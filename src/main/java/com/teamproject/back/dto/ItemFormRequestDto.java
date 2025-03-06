@@ -36,4 +36,5 @@ public class ItemFormRequestDto {
 
     private MultipartFile imageFile;
 
+//    private List<ItemDetailImageDTO> itemDetailImages;
 }

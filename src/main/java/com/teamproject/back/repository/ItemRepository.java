@@ -39,24 +39,43 @@ public class ItemRepository {
     public Item findById(int id){
 //        String jpql = "SELECT i FROM Item i WHERE i.id = :id";
 
-        String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
+//        String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
+//                      "FROM Item i " +
+//                      "LEFT JOIN Comment c " +
+//                      "ON i.id = c.item.id " +
+//                      "WHERE i.id = :id " +
+//                      "GROUP BY i.id";
+
+        String getItemJpql = "SELECT i " +
                       "FROM Item i " +
-                      "LEFT JOIN Comment c " +
-                      "ON i.id = c.item.id " +
-                      "WHERE i.id = :id " +
-                      "GROUP BY i.id";
+                      "JOIN FETCH i.itemDetailImages ii " +
+                      "WHERE i.id = :id ";
+
+
+        String getReviewJpql = "SELECT COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
+                                 "FROM Item i " +
+                                 "LEFT JOIN Comment c " +
+                                 "ON i.id = c.item.id " +
+                                 "WHERE i.id = :id " +
+                                 "GROUP BY i.id";
+
 
         try{
-            Object[] result = entityManager.createQuery(jpql, Object[].class)
+
+            Item findItem = entityManager.createQuery(getItemJpql, Item.class)
                     .setParameter("id", id)
                     .getSingleResult();
 
-            Item item = (Item) result[0];
-            item.setAverageRating((int) ((double)result[1]));
-            item.setCommentCount((int) (long)result[2]);
+            Object[] result = entityManager.createQuery(getReviewJpql, Object[].class)
+                                  .setParameter("id", id)
+                                  .getSingleResult();
 
-            return item;
+            findItem.setAverageRating((int) ((double)result[0]));
+            findItem.setCommentCount((int) (long)result[1]);
+            return findItem;
+
         }catch (NoResultException e) {
+            log.info("상품 조회 실패");
             return null;
         }
 

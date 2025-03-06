@@ -1,17 +1,21 @@
 package com.teamproject.back.service;
 
 import com.teamproject.back.dto.ItemDTO;
+import com.teamproject.back.dto.ItemDetailImageDTO;
 import com.teamproject.back.dto.ItemFormRequestDto;
 import com.teamproject.back.dto.ItemFormResponseDto;
 import com.teamproject.back.entity.Item;
+import com.teamproject.back.entity.ItemDetailImage;
 import com.teamproject.back.repository.CommentRepository;
 import com.teamproject.back.repository.ItemRepository;
 import com.teamproject.back.util.GcsImage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,6 +100,8 @@ public class ItemService {
             log.info("상품 저장 실패");
             return null;
         }
+
+
         return itemToItemFormResponseDto(saveItem);
     }
 
@@ -153,6 +159,11 @@ public class ItemService {
             }
         }
 
+        List<ItemDetailImageDTO> itemDetailImageDTOs = (item.getItemDetailImages() == null || item.getItemDetailImages().isEmpty())
+                ? Collections.emptyList()  // null 또는 빈 리스트일 경우 빈 리스트 반환
+                : item.getItemDetailImages().stream()
+                .map(this::itemDetailImageToDTO)
+                .collect(Collectors.toList());
 
         if(item != null){
             return ItemFormResponseDto.builder()
@@ -160,10 +171,12 @@ public class ItemService {
                     .itemName(item.getItemName())
                     .itemDesc(item.getItemDesc())
                     .itemImg(item.getItemImg())
+                    .itemDetailImages(itemDetailImageDTOs)
                     .averageRating(averageRating)
                     .commentCount(item.getCommentCount())
                     .itemStock(item.getItemStock())
                     .itemOriginPrice(item.getItemOriginPrice())
+                    .itemPrice(item.getItemPrice())
                     .itemBrand(item.getItemBrand())
                     .category(item.getCategory())
                     .build();
@@ -177,6 +190,15 @@ public class ItemService {
                 .map(this::itemToItemFormResponseDto)
                 .collect(Collectors.toList());
     }
+
+    public ItemDetailImageDTO itemDetailImageToDTO(ItemDetailImage itemDetailImage){
+        return ItemDetailImageDTO.builder()
+                .imageIndex(itemDetailImage.getImgIndex())
+                .imageUrl(itemDetailImage.getImg())
+                .build();
+    }
+
+
 
 
 
@@ -205,6 +227,7 @@ public class ItemService {
                     .itemImg(itemDto.getItemImg())
                     .itemStock(itemDto.getItemStock())
                     .itemOriginPrice(itemDto.getItemOriginPrice())
+                    .itemPrice(itemDto.getItemPrice())
                     .itemBrand(itemDto.getItemBrand())
                     .category(itemDto.getCategory())
                     .build();
@@ -217,6 +240,7 @@ public class ItemService {
                 .itemImg(itemDto.getItemImg())
                 .itemStock(itemDto.getItemStock())
                 .itemOriginPrice(itemDto.getItemOriginPrice())
+                .itemPrice(itemDto.getItemPrice())
                 .itemBrand(itemDto.getItemBrand())
                 .category(itemDto.getCategory())
                 .build();

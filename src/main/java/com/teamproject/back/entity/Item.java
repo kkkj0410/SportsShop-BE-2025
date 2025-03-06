@@ -3,6 +3,7 @@ package com.teamproject.back.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -42,6 +43,9 @@ public class Item {
 
     @OneToMany(mappedBy = "item",fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<ItemDetailImage> itemDetailImages = new ArrayList<>();
 
     @Transient // 이 필드는 DB에 저장되지 않음
     private Integer averageRating;

@@ -1,15 +1,19 @@
 package com.teamproject.back.controller;
 
 
+import com.teamproject.back.dto.ItemDetailImageDTO;
 import com.teamproject.back.dto.ItemFormResponseDto;
 import com.teamproject.back.dto.ItemFormRequestDto;
 import com.teamproject.back.entity.Category;
+import com.teamproject.back.entity.Item;
+import com.teamproject.back.service.ItemDetailImageService;
 import com.teamproject.back.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
@@ -23,16 +27,31 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
+    private final ItemDetailImageService itemDetailImageService;
+
 
     @Autowired
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, ItemDetailImageService itemDetailImageService) {
         this.itemService = itemService;
+        this.itemDetailImageService = itemDetailImageService;
     }
 
+    //    @PostMapping("/item")
+//    public ResponseEntity<?> item(@ModelAttribute ItemFormRequestDto itemFormRequestDto){
+//        if(itemService.save(itemFormRequestDto) != null){
+//            return ResponseEntity.ok("ok");
+//        }
+//
+//        return ResponseEntity.badRequest().body("상품 등록에 실패했습니다");
+//    }
 
     @PostMapping("/item")
-    public ResponseEntity<?> item(@ModelAttribute ItemFormRequestDto itemFormRequestDto){
-        if(itemService.save(itemFormRequestDto) != null){
+    public ResponseEntity<?> itemPost(
+            @ModelAttribute ItemFormRequestDto itemFormRequestDto,
+            @RequestPart("itemDetailImages") List<MultipartFile> itemDetailImages){
+
+        ItemFormResponseDto itemFormResponseDto = itemService.save(itemFormRequestDto);
+        if(itemFormResponseDto != null && itemDetailImageService.saveAll(itemFormResponseDto.getId(), itemDetailImages) != null){
             return ResponseEntity.ok("ok");
         }
 

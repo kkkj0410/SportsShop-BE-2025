@@ -3,6 +3,7 @@ package com.teamproject.back.repository;
 import com.teamproject.back.entity.Comment;
 import com.teamproject.back.entity.Item;
 import com.teamproject.back.entity.Users;
+import com.teamproject.back.util.AesUtil;
 import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,12 +38,77 @@ public class CommentRepository {
     }
 
     @Transactional(readOnly = true)
+    public List<Comment> findComments(){
+
+        String jpql = "SELECT c, c.parentComment.id " +
+                      "FROM Comment c " +
+                      "JOIN FETCH c.users u " +
+                      "WHERE c.users.id = u.id";
+
+//        String jpql = "SELECT c " +
+//                        "FROM Comment c " +
+//                        "JOIN FETCH c.parentComment cc " +
+//                        "WHERE c.parentComment.id = cc.id";
+
+        try{
+            List<Object[]> results = em.createQuery(jpql, Object[].class)
+                                    .getResultList();
+
+            List<Comment> comments = new ArrayList<>();
+            for(Object[] result : results){
+                Comment comment = (Comment)result[0];
+                Long parentCommentId = (Long) result[1];
+
+                comment.setParentCommentId(parentCommentId);
+                comments.add(comment);
+            }
+            return comments;
+        }
+        catch(NoResultException e){
+            log.info("댓글 조회 실패");
+            return null;
+        }
+
+    }
+
+    @Transactional(readOnly = true)
     public List<Comment> findParentComments(){
         String jpql = "SELECT c.parentComment FROM Comment c";
 
         return em.createQuery(jpql, Comment.class)
                 .getResultList();
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<Comment> findCommentsByItemId(Integer itemId){
+        String jpql = "SELECT c, p.id " +
+                        "FROM Comment c " +
+                        "JOIN FETCH c.users u " +
+//                        "JOIN FETCH c.commentImages cc " +
+                        "LEFT JOIN c.parentComment p " +
+                        "WHERE c.item.id = :itemId ";
+
+
+        try{
+            List<Object[]> results = em.createQuery(jpql, Object[].class)
+                    .setParameter("itemId", itemId)
+                    .getResultList();
+
+            List<Comment> comments = new ArrayList<>();
+            for(Object[] result : results){
+                Comment comment = (Comment)result[0];
+                Long parentCommentId = (Long) result[1];
+
+                comment.setParentCommentId(parentCommentId);
+                comments.add(comment);
+            }
+            return comments;
+        }
+        catch(NoResultException e){
+            log.info("댓글 조회 실패");
+            return null;
+        }
     }
 
     @Transactional(readOnly = true)
@@ -79,7 +146,7 @@ public class CommentRepository {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = em.createQuery("SELECT u FROM Users u WHERE u.email = :email", Users.class)
-                .setParameter("email", email)
+                .setParameter("email", AesUtil.encrypt(email))
                 .getSingleResult();
 
         comment.fetchUsers(user);
@@ -98,7 +165,7 @@ public class CommentRepository {
 //                .getSingleResult();
         String jpql = "SELECT u FROM Users u WHERE u.email = :email";
         Users users = em.createQuery(jpql, Users.class)
-                .setParameter("email", email)
+                .setParameter("email", AesUtil.encrypt(email))
                 .getSingleResult();
 
         if(users == null){

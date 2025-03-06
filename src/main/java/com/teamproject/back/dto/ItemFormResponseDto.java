@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Data
 @Builder
 //상품 생성 및 수정
@@ -19,6 +21,8 @@ public class ItemFormResponseDto {
 
     //이미지 URL
     private String itemImg;
+
+    private List<ItemDetailImageDTO> itemDetailImages;
 
     private Integer averageRating;
 

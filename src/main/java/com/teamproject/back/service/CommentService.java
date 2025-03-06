@@ -2,8 +2,10 @@ package com.teamproject.back.service;
 
 
 import com.teamproject.back.dto.CommentDto;
+import com.teamproject.back.dto.CommentImageDTO;
 import com.teamproject.back.dto.ItemFormResponseDto;
 import com.teamproject.back.entity.Comment;
+import com.teamproject.back.entity.CommentImage;
 import com.teamproject.back.entity.Item;
 import com.teamproject.back.entity.Users;
 import com.teamproject.back.repository.CommentRepository;
@@ -14,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,9 +40,18 @@ public class CommentService {
         return toCommentDto(commentRepository.findById(id));
     }
 
+    public List<CommentDto> findComments(){
+        return toCommentDtoList(commentRepository.findComments());
+    }
 
     public List<CommentDto> findParentComments(){
         return toCommentDtoList(commentRepository.findParentComments());
+    }
+
+    public List<CommentDto> findCommentsByItemId(Integer itemId){
+        List<Comment> comments = commentRepository.findCommentsByItemId(itemId);
+        log.info("comments : {}", comments);
+        return toCommentDtoList(comments);
     }
 
     public List<CommentDto> findParentCommentsByItemId(Integer itemId){
@@ -53,7 +65,8 @@ public class CommentService {
     }
 
     public CommentDto createComment(Integer itemId, CommentDto commentDto){
-        commentRepository.save(itemId, toComment(commentDto));
+        Comment comment = commentRepository.save(itemId, toComment(commentDto));
+        commentDto.setId(comment.getId());
         return commentDto;
     }
 
@@ -102,15 +115,22 @@ public class CommentService {
     }
 
     private CommentDto toCommentDto(Comment comment){
-        if(comment.getParentComment() == null){
+        if(comment == null){
+            return null;
+        }
+
+        if(comment.getParentCommentId() == null){
             return CommentDto.builder()
                     .id(comment.getId())
                     .content(comment.getContent())
                     .rating(comment.getRating())
 //                    .like(comment.getLikes())
                     .usersId(comment.getUsers().getId())
+                    .username(comment.getUsers().getUsername())
                     .email(comment.getUsers().getEmail())
-                    .itemId(comment.getItem().getId())
+                    .parentCommentId(comment.getParentCommentId())
+//                    .itemId(comment.getItem().getId())
+                    .commentImages(toCommentImageDTOs(comment.getCommentImages()))
                     .created_date(comment.getCreated_date())
                     .build();
         }
@@ -121,9 +141,10 @@ public class CommentService {
                 .rating(comment.getRating())
 //                .like(comment.getLikes())
                 .usersId(comment.getUsers().getId())
+                .username(comment.getUsers().getUsername())
                 .email(comment.getUsers().getEmail())
-                .itemId(comment.getItem().getId())
-                .parentCommentId(comment.getParentComment().getId())
+//                .itemId(comment.getItem().getId())
+                .parentCommentId(comment.getParentCommentId())
                 .created_date(comment.getCreated_date())
 //                .parentComment(comment.getParentComment())
 //                .childComments(comment.getChildComments())
@@ -140,5 +161,28 @@ public class CommentService {
     public Map<String,Object> findByRatingAndCommentCount(long id) {
         Map<String, Object> map = commentRepository.findByRatingAndCommentCount((Long)id);
         return map;
+    }
+
+    private List<CommentImageDTO> toCommentImageDTOs(List<CommentImage> commentImages){
+        if(commentImages.size() == 0 ){
+            return null;
+        }
+
+        List<CommentImageDTO> commentImageDTOs = new ArrayList<>();
+        commentImages.forEach((commentImage) -> {
+            commentImageDTOs.add(toCommentImageDTO(commentImage));
+        });
+
+        return commentImageDTOs;
+    }
+
+    private CommentImageDTO toCommentImageDTO(CommentImage commentImage){
+        if(commentImage == null){
+            return null;
+        }
+
+        return CommentImageDTO.builder()
+                .imageUrl(commentImage.getImg())
+                .build();
     }
 }

@@ -1,10 +1,6 @@
 package com.teamproject.back.dto;
 
 
-import com.teamproject.back.entity.Comment;
-import com.teamproject.back.entity.Item;
-import com.teamproject.back.entity.Users;
-import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,17 +14,21 @@ public class CommentDto {
 
     private String content;
 
-    private Integer rating;
+    private Double rating;
 
     private LocalDateTime created_date;
 
     private Long usersId;
+
+    private String username;
 
     private String email;
 
     private Integer itemId;
 
     private Long parentCommentId;
+
+    private List<CommentImageDTO> commentImages;
 
 //    private List<CommentDto> childComments;
 
