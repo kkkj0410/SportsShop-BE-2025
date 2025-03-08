@@ -151,7 +151,7 @@ public class ItemService {
 
 
     private ItemFormResponseDto itemToItemFormResponseDto(Item item){
-        Integer averageRating = item.getAverageRating();
+        Double averageRating = item.getAverageRating();
         if(averageRating == null){
             averageRating = commentRepository.findAverageRating(item.getId());
             if(averageRating == null){

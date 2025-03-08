@@ -118,7 +118,16 @@ public class CommentRepository {
         //문제점) user, item, parentComment 각 객체를 service 계층에서 조회하므로, +3번 쿼리 더 나감
         String jpql2 = "SELECT c FROM Comment c JOIN FETCH c.item i WHERE c.item.id = :itemId";
 
-        return em.createQuery(jpql2, Comment.class)
+        String jpql6 = "SELECT c " +
+                "FROM Comment c " +
+                "LEFT JOIN FETCH c.parentComment p " +
+                "JOIN FETCH c.item i " +
+                "JOIN FETCH c.users u " +
+                "WHERE p Is NULL " +
+                "AND i.id = : itemId";
+
+
+        return em.createQuery(jpql6, Comment.class)
                 .setParameter("itemId", itemId)
                 .getResultList();
     }
@@ -244,7 +253,7 @@ public class CommentRepository {
 
 
     @Transactional(readOnly = true)
-    public Integer findAverageRating(Integer itemId){
+    public Double findAverageRating(Integer itemId){
         String findAllRatingJpql = "SELECT AVG(c.rating) FROM Comment c " +
                                    "JOIN c.item i " +
                                    "WHERE i.id = :itemId";
@@ -258,7 +267,7 @@ public class CommentRepository {
                 return null;
             }
 
-            return (int) averageRating.doubleValue();
+            return averageRating;
         }catch(NoResultException e){
             log.error("평점이 존재하지 않습니다");
             return null;

@@ -17,6 +17,7 @@ public class ItemDTO {
 
     private String itemImg;
 
+    //**3.7**(Integer -> Long 으로 디자인 변경, 소수점 1자리만 표기)
     private Integer averageRating;
 
     private int itemStock;

@@ -49,8 +49,8 @@ public class CommentController {
 
     @GetMapping("/item/{itemId}/comments")
     public ResponseEntity<?> getCommentsByItemId(@PathVariable Integer itemId){
-//        List<CommentDto> commentDto = commentService.findParentCommentsByItemId(itemId);
-        List<CommentDto> commentDto = commentService.findCommentsByItemId(itemId);
+        List<CommentDto> commentDto = commentService.findParentCommentsByItemId(itemId);
+//        List<CommentDto> commentDto = commentService.findCommentsByItemId(itemId);
 
         if(commentDto == null){
             return ResponseEntity.badRequest().body("댓글 조회에 실패했습니다");

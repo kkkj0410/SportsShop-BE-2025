@@ -70,7 +70,7 @@ public class ItemRepository {
                                   .setParameter("id", id)
                                   .getSingleResult();
 
-            findItem.setAverageRating((int) ((double)result[0]));
+            findItem.setAverageRating(((double)result[0]));
             findItem.setCommentCount((int) (long)result[1]);
             return findItem;
 
@@ -99,7 +99,7 @@ public class ItemRepository {
             List<Item> items = new ArrayList<>();
             for(Object[] result : results){
                 Item item = (Item) result[0];
-                item.setAverageRating((int) ((double)result[1]));
+                item.setAverageRating( ((double)result[1]));
                 item.setCommentCount((int) (long)result[2]);
                 items.add(item);
             }
@@ -135,7 +135,7 @@ public class ItemRepository {
             List<Item> items = new ArrayList<>();
             for(Object[] result : results){
                 Item item = (Item) result[0];
-                item.setAverageRating((int) ((double)result[1]));
+                item.setAverageRating(((double)result[1]));
                 item.setCommentCount((int) (long)result[2]);
                 items.add(item);
             }
@@ -170,7 +170,7 @@ public class ItemRepository {
             List<Item> items = new ArrayList<>();
             for(Object[] result : results){
                 Item item = (Item) result[0];
-                item.setAverageRating((int) ((double)result[1]));
+                item.setAverageRating( ((double)result[1]));
                 item.setCommentCount((int) (long)result[2]);
                 items.add(item);
             }
@@ -204,7 +204,7 @@ public class ItemRepository {
             List<Item> items = new ArrayList<>();
             for(Object[] result : results){
                 Item item = (Item) result[0];
-                item.setAverageRating((int) ((double)result[1]));
+                item.setAverageRating( ((double)result[1]));
                 item.setCommentCount((int) (long)result[2]);
                 items.add(item);
             }
@@ -236,7 +236,7 @@ public class ItemRepository {
             List<Item> items = new ArrayList<>();
             for(Object[] result : results){
                 Item item = (Item) result[0];
-                item.setAverageRating((int) ((double)result[1]));
+                item.setAverageRating(((double)result[1]));
                 item.setCommentCount((int) (long)result[2]);
                 items.add(item);
             }
@@ -415,7 +415,7 @@ public class ItemRepository {
             List<Item> items = new ArrayList<>();
             for(Object[] result : results){
                 Item item = (Item) result[0];
-                item.setAverageRating((int) ((double)result[1]));
+                item.setAverageRating( ((double)result[1]));
                 item.setCommentCount((int) (long)result[2]);
                 items.add(item);
             }

@@ -24,7 +24,7 @@ public class ItemFormResponseDto {
 
     private List<ItemDetailImageDTO> itemDetailImages;
 
-    private Integer averageRating;
+    private Double averageRating;
 
     private Integer commentCount;
 
@@ -38,4 +38,9 @@ public class ItemFormResponseDto {
 
     private Category category;
 
+
+
+    public Double getAverageRating() {
+        return Math.round(averageRating * 10) / 10.0;
+    }
 }
