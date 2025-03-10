@@ -50,7 +50,7 @@ public class Users {
     @OneToMany(mappedBy = "users")
     private List<Address> addresses;
 
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<Cart> carts;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)

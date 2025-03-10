@@ -21,7 +21,6 @@ public class UserDto {
     private String username;
 //    private String phoneNumber;
     private Role role;
-
     private LocalDate birthday;
 
 }
