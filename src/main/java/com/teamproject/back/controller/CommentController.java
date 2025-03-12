@@ -48,8 +48,12 @@ public class CommentController {
     }
 
     @GetMapping("/item/{itemId}/comments")
-    public ResponseEntity<?> getCommentsByItemId(@PathVariable Integer itemId){
-        List<CommentDto> commentDto = commentService.findParentCommentsByItemId(itemId);
+    public ResponseEntity<?> getCommentsByItemId(
+            @PathVariable Integer itemId,
+            @RequestParam("size") int size,
+            @RequestParam("page") int page
+    ){
+        List<CommentDto> commentDto = commentService.findParentCommentsByItemId(itemId, size, page);
 //        List<CommentDto> commentDto = commentService.findCommentsByItemId(itemId);
 
         if(commentDto == null){

@@ -37,8 +37,8 @@ public class ItemService {
         this.gcsImage = gcsImage;
     }
 
-    public List<ItemFormResponseDto> findItemListByNew(int size, int page){
-        List<Item> itemList = itemRepository.findItemsWithPagination(size, page);
+    public List<ItemFormResponseDto> findItemListByNew(int size, int page, String search){
+        List<Item> itemList = itemRepository.findItemsWithPagination(size, page, search);
         if(itemList == null){
             log.info("상품 조회 실패");
             return null;
@@ -47,8 +47,8 @@ public class ItemService {
         return itemListToItemFormResponseDtoList(itemList);
     }
 
-    public List<ItemFormResponseDto> findItemListByPriceDesc(int size, int page){
-        List<Item> itemList = itemRepository.findItemsSortedByPriceDesc(size, page);
+    public List<ItemFormResponseDto> findItemListByPriceDesc(int size, int page, String search){
+        List<Item> itemList = itemRepository.findItemsSortedByPriceDesc(size, page, search);
         if(itemList == null){
             log.info("상품 조회 실패");
             return null;
@@ -57,8 +57,8 @@ public class ItemService {
         return itemListToItemFormResponseDtoList(itemList);
     }
 
-    public List<ItemFormResponseDto> findItemListByPriceAsc(int size, int page){
-        List<Item> itemList = itemRepository.findItemsSortedByPriceAsc(size, page);
+    public List<ItemFormResponseDto> findItemListByPriceAsc(int size, int page, String search){
+        List<Item> itemList = itemRepository.findItemsSortedByPriceAsc(size, page, search);
         if(itemList == null){
             log.info("상품 조회 실패");
             return null;
@@ -67,8 +67,8 @@ public class ItemService {
         return itemListToItemFormResponseDtoList(itemList);
     }
 
-    public List<ItemFormResponseDto> findItemsSortedByRecommendDesc(int size, int page){
-        List<Item> itemList = itemRepository.findItemsSortedByRecommendDesc(size, page);
+    public List<ItemFormResponseDto> findItemsSortedByRecommendDesc(int size, int page, String search){
+        List<Item> itemList = itemRepository.findItemsSortedByRecommendDesc(size, page, search);
         if(itemList == null){
             log.info("상품 조회 실패");
             return null;
@@ -77,8 +77,8 @@ public class ItemService {
         return itemListToItemFormResponseDtoList(itemList);
     }
 
-    public List<ItemFormResponseDto> findItemsSortedByComment(int size, int page){
-        List<Item> itemList = itemRepository.findItemsSortedByComment(size, page);
+    public List<ItemFormResponseDto> findItemsSortedByComment(int size, int page, String search){
+        List<Item> itemList = itemRepository.findItemsSortedByComment(size, page, search);
         if(itemList == null){
             log.info("상품 조회 실패");
             return null;

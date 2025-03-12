@@ -112,7 +112,7 @@ public class CommentRepository {
     }
 
     @Transactional(readOnly = true)
-    public List<Comment> findParentCommentsByItemId(Integer itemId){
+    public List<Comment> findParentCommentsByItemId(Integer itemId, int size, int page){
         String jpql = "SELECT c FROM Comment c JOIN c.item i WHERE c.item.id = :itemId";
         //Item 객체 전체가 조회되는 문제 발생
         //문제점) user, item, parentComment 각 객체를 service 계층에서 조회하므로, +3번 쿼리 더 나감
@@ -129,6 +129,8 @@ public class CommentRepository {
 
         return em.createQuery(jpql6, Comment.class)
                 .setParameter("itemId", itemId)
+                .setFirstResult((page - 1) * size)
+                .setMaxResults(size)
                 .getResultList();
     }
 

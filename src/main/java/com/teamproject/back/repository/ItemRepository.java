@@ -81,17 +81,19 @@ public class ItemRepository {
 
     }
 
-    //최신순
     @Transactional(readOnly = true)
-    public List<Item> findItemsWithPagination(int size, int page){
+    public List<Item> findItemsWithPagination(int size, int page, String search){
 //        String jpql = "SELECT i FROM Item i";
         String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
                 "FROM Item i " +
                 "LEFT JOIN Comment c ON i.id = c.item.id " +
+                "WHERE i.itemName " +
+                "LIKE :search " +
                 "GROUP BY i.id";
 
         try{
             List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
+                    .setParameter("search", "%" + search + "%")
                     .setFirstResult((page-1) * size)
                     .setMaxResults(size)
                     .getResultList();
@@ -113,9 +115,42 @@ public class ItemRepository {
         }
     }
 
+
+    //최신순
+//    @Transactional(readOnly = true)
+//    public List<Item> findItemsWithPagination(int size, int page){
+////        String jpql = "SELECT i FROM Item i";
+//        String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
+//                "FROM Item i " +
+//                "LEFT JOIN Comment c ON i.id = c.item.id " +
+//                "GROUP BY i.id";
+//
+//        try{
+//            List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
+//                    .setFirstResult((page-1) * size)
+//                    .setMaxResults(size)
+//                    .getResultList();
+//
+//            List<Item> items = new ArrayList<>();
+//            for(Object[] result : results){
+//                Item item = (Item) result[0];
+//                item.setAverageRating( ((double)result[1]));
+//                item.setCommentCount((int) (long)result[2]);
+//                items.add(item);
+//            }
+//
+//            if(items.isEmpty()){
+//                return null;
+//            }
+//            return items;
+//        }catch (NoResultException e) {
+//            return null;
+//        }
+//    }
+
     //가격 오름차순
     @Transactional(readOnly = true)
-    public List<Item> findItemsSortedByPriceAsc(int size, int page){
+    public List<Item> findItemsSortedByPriceAsc(int size, int page, String search){
 //        String jpql = "SELECT i FROM Item i " +
 //                "ORDER BY i.itemPrice ASC";
 
@@ -123,11 +158,14 @@ public class ItemRepository {
         String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
                       "FROM Item i " +
                       "LEFT JOIN Comment c ON i.id = c.item.id " +
+                      "WHERE i.itemName " +
+                      "LIKE :search " +
                       "GROUP BY i.id " +
                       "ORDER BY i.itemPrice ASC";
 
         try{
             List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
+                    .setParameter("search", "%" + search + "%")
                     .setFirstResult((page-1) * size)
                     .setMaxResults(size)
                     .getResultList();
@@ -151,18 +189,21 @@ public class ItemRepository {
 
     //가격 내림차순
     @Transactional(readOnly = true)
-    public List<Item> findItemsSortedByPriceDesc(int size, int page){
+    public List<Item> findItemsSortedByPriceDesc(int size, int page, String search){
 //        String jpql = "SELECT i FROM Item i " +
 //                "ORDER BY i.itemPrice DESC";
 
         String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
                        "FROM Item i " +
                        "LEFT JOIN Comment c ON i.id = c.item.id " +
+                       "WHERE i.itemName " +
+                       "LIKE :search " +
                        "GROUP BY i.id " +
                        "ORDER BY i.itemPrice DESC";
 
         try{
             List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
+                    .setParameter("search", "%" + search + "%")
                     .setFirstResult((page-1) * size)
                     .setMaxResults(size)
                     .getResultList();
@@ -185,10 +226,12 @@ public class ItemRepository {
     }
 
     @Transactional(readOnly = true)
-    public List<Item> findItemsSortedByRecommendDesc(int size, int page) {
+    public List<Item> findItemsSortedByRecommendDesc(int size, int page, String search) {
         String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
                       "FROM Item i " +
                       "LEFT JOIN Comment c ON i.id = c.item.id " +
+                      "WHERE i.itemName " +
+                      "LIKE :search " +
                       "GROUP BY i.id " +
                       "ORDER BY " +
                       "CASE WHEN AVG(c.rating) IS NULL THEN 1 ELSE 0 END, " +
@@ -197,6 +240,7 @@ public class ItemRepository {
 
         try{
             List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
+                                    .setParameter("search", "%" + search + "%")
                                     .setFirstResult((page-1) * size)
                                     .setMaxResults(size)
                                     .getResultList();
@@ -219,16 +263,19 @@ public class ItemRepository {
     }
 
     @Transactional(readOnly = true)
-    public List<Item> findItemsSortedByComment(int size, int page){
+    public List<Item> findItemsSortedByComment(int size, int page, String search){
         String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
                       "FROM Item i " +
                       "LEFT JOIN Comment c " +
                       "ON i.id = c.item.id " +
+                      "WHERE i.itemName " +
+                      "LIKE :search " +
                       "GROUP BY i.id " +
                       "ORDER BY COUNT(c.id) DESC";
 
         try{
             List<Object[]> results = entityManager.createQuery(jpql, Object[].class)
+                    .setParameter("search", "%" + search + "%")
                     .setFirstResult((page-1) * size)
                     .setMaxResults(size)
                     .getResultList();

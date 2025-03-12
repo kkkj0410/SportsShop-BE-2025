@@ -82,26 +82,32 @@ public class ItemController {
     public ResponseEntity<?> itemGet(
             @RequestParam("size") int size,
             @RequestParam("page") int page,
-            @RequestParam(value = "sort", defaultValue = "new") String sort){
+            @RequestParam(value = "search", defaultValue = "") String search,
+            @RequestParam(value = "sort", defaultValue = "new") String sort
+    ){
         //page = page-1 => page는 0부터 시작
+        if(search.equals("null")){
+            search="";
+        }
+
         List<ItemFormResponseDto> itemDtoList = null;
         if(sort.equals("new")){
-            itemDtoList = itemService.findItemListByNew(size,page);
+            itemDtoList = itemService.findItemListByNew(size,page, search);
         }
         else if(sort.equals("expensive")){
-            itemDtoList = itemService.findItemListByPriceDesc(size,page);
+            itemDtoList = itemService.findItemListByPriceDesc(size,page, search);
         }
         else if(sort.equals("cheap")){
-            itemDtoList = itemService.findItemListByPriceAsc(size,page);
+            itemDtoList = itemService.findItemListByPriceAsc(size,page, search);
         }
         else if(sort.equals("recommend")){
-            itemDtoList = itemService.findItemsSortedByRecommendDesc(size, page);
+            itemDtoList = itemService.findItemsSortedByRecommendDesc(size, page, search);
         }
         else if(sort.equals("review")){
-            itemDtoList = itemService.findItemsSortedByComment(size, page);
+            itemDtoList = itemService.findItemsSortedByComment(size, page, search);
         }
         else{
-            itemDtoList = itemService.findItemListByNew(size,page);
+            itemDtoList = itemService.findItemListByNew(size,page, search);
         }
 
 

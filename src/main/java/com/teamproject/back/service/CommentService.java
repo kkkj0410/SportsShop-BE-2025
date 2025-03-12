@@ -54,8 +54,8 @@ public class CommentService {
         return toCommentDtoList(comments);
     }
 
-    public List<CommentDto> findParentCommentsByItemId(Integer itemId){
-        List<Comment> comments = commentRepository.findParentCommentsByItemId(itemId);
+    public List<CommentDto> findParentCommentsByItemId(Integer itemId, int size, int page){
+        List<Comment> comments = commentRepository.findParentCommentsByItemId(itemId, size, page);
         log.info("comments : {}", comments);
         return toCommentDtoList(comments);
     }
