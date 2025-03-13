@@ -99,6 +99,21 @@ public class CartRepository {
     }
 
     @Transactional
+    public int updateCartIncreaseQuantity(Cart cart, Integer itemId, String email) {
+        String encryptedEmail = AesUtil.encrypt(email);
+        String updateCartJpql = "UPDATE Cart c " +
+                "SET c.quantity = c.quantity + :quantity " +
+                "WHERE c.item.id = :itemId " +
+                "AND c.users.email = :email";
+
+        return em.createQuery(updateCartJpql)
+                .setParameter("quantity", cart.getQuantity())
+                .setParameter("itemId", itemId)
+                .setParameter("email", encryptedEmail)
+                .executeUpdate();
+    }
+
+    @Transactional
     public int deleteCart(Long cartId) {
         String deleteCartJpql = "DELETE " +
                                 "FROM Cart c " +

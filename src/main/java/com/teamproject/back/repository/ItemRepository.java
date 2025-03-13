@@ -56,6 +56,7 @@ public class ItemRepository {
                                  "FROM Item i " +
                                  "LEFT JOIN Comment c " +
                                  "ON i.id = c.item.id " +
+                                 "AND c.rating IS NOT NULL " +
                                  "WHERE i.id = :id " +
                                  "GROUP BY i.id";
 
@@ -86,7 +87,9 @@ public class ItemRepository {
 //        String jpql = "SELECT i FROM Item i";
         String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
                 "FROM Item i " +
-                "LEFT JOIN Comment c ON i.id = c.item.id " +
+                "LEFT JOIN Comment c " +
+                "ON i.id = c.item.id " +
+                "AND c.rating IS NOT NULL " +
                 "WHERE i.itemName " +
                 "LIKE :search " +
                 "GROUP BY i.id";
@@ -158,6 +161,7 @@ public class ItemRepository {
         String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
                       "FROM Item i " +
                       "LEFT JOIN Comment c ON i.id = c.item.id " +
+                      "AND c.rating IS NOT NULL " +
                       "WHERE i.itemName " +
                       "LIKE :search " +
                       "GROUP BY i.id " +
@@ -196,6 +200,7 @@ public class ItemRepository {
         String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
                        "FROM Item i " +
                        "LEFT JOIN Comment c ON i.id = c.item.id " +
+                       "AND c.rating IS NOT NULL " +
                        "WHERE i.itemName " +
                        "LIKE :search " +
                        "GROUP BY i.id " +
@@ -230,6 +235,7 @@ public class ItemRepository {
         String jpql = "SELECT i, COALESCE(AVG(c.rating), 0) AS avgRating, COALESCE(COUNT(c.id), 0) AS commentCount " +
                       "FROM Item i " +
                       "LEFT JOIN Comment c ON i.id = c.item.id " +
+                      "AND c.rating IS NOT NULL " +
                       "WHERE i.itemName " +
                       "LIKE :search " +
                       "GROUP BY i.id " +
@@ -268,6 +274,7 @@ public class ItemRepository {
                       "FROM Item i " +
                       "LEFT JOIN Comment c " +
                       "ON i.id = c.item.id " +
+                      "AND c.rating IS NOT NULL " +
                       "WHERE i.itemName " +
                       "LIKE :search " +
                       "GROUP BY i.id " +

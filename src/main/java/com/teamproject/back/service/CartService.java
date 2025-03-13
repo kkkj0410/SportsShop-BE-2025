@@ -48,6 +48,11 @@ public class CartService {
         return cartRepository.updateCartQuantity(toEntity(cartDTO), cartDTO.getItemId(), email);
     }
 
+    public int updateCartIncreaseQuantity(CartDTO cartDTO){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return cartRepository.updateCartIncreaseQuantity(toEntity(cartDTO), cartDTO.getItemId(), email);
+    }
+
     public int deleteCart(Long cartId){
         return cartRepository.deleteCart(cartId);
     }

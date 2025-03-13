@@ -52,7 +52,10 @@ public class CartController{
         CartDTO savedCartDTO = cartService.save(cartDTO);
 
         if(savedCartDTO == null){
-            return ResponseEntity.badRequest().body("장바구니 저장에 실패했습니다.");
+            int count = cartService.updateCartIncreaseQuantity(cartDTO);
+            if(count != 1){
+                return ResponseEntity.badRequest().body("장바구니 저장에 실패했습니다.");
+            }
         }
 
         return ResponseEntity.ok("ok");
