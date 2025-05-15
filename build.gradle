@@ -40,7 +40,24 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
-    runtimeOnly 'com.mysql:mysql-connector-j'
+
+//    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.h2database:h2:2.2.224'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    //GCS
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.5.RELEASE'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-storage', version: '1.2.5.RELEASE'
+
+    //SMTP
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    //OAuth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    //추가(2.3) - AES
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
 }
 
 tasks.named('test') {

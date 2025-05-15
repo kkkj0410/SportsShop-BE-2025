@@ -1,21 +1,33 @@
 package com.teamproject.back.service;
 
-
-
 import com.teamproject.back.dto.UserDto;
 import com.teamproject.back.entity.Users;
 import com.teamproject.back.repository.AuthRepository;
+import com.teamproject.back.util.AesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
-    private AuthRepository authRepository;
+    private final AuthRepository authRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthService(AuthRepository authRepository){
+    public AuthService(AuthRepository authRepository, BCryptPasswordEncoder passwordEncoder){
         this.authRepository = authRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public UserDto login(String email, String inputPassword){
+        UserDto userDto = this.findByUser(email);
+
+        if(userDto != null && this.validatePassword(inputPassword, userDto.getPassword())){
+            return userDto;
+        }
+        return null;
     }
 
     public UserDto findByUser(String email){
@@ -23,9 +35,32 @@ public class AuthService {
         if(user != null){
             return usersToUserDto(user);
         }
-
         return null;
     }
+
+    public boolean validatePassword(String rawPassword, String encodedPassword){
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    public boolean validatePassword(String rawPassword){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return passwordEncoder.matches(rawPassword, this.findByUser(email).getPassword());
+    }
+
+//    private Users decrypt(Users users){
+//        return Users.builder()
+//                .id(users.getId())
+//                .email(AesUtil.decrypt(users.getEmail()))
+//                .password(users.getPassword())
+//                .username(AesUtil.decrypt(users.getUsername()))
+//                .phoneNumber(AesUtil.decrypt(users.getPhoneNumber()))
+//                .role(users.getRole())
+//                .birthday(users.getBirthday())
+//                .build();
+//
+//    }
+
 
     private UserDto usersToUserDto(Users users){
         return UserDto.builder()
@@ -33,7 +68,7 @@ public class AuthService {
                 .email(users.getEmail())
                 .password(users.getPassword())
                 .username(users.getUsername())
-                .phoneNumber(users.getPhoneNumber())
+//                .phoneNumber(users.getPhoneNumber())
                 .role(users.getRole())
                 .birthday(users.getBirthday())
                 .build();

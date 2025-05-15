@@ -1,24 +1,28 @@
 package com.teamproject.back.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
+
 @Data
 @Table(name = "item")
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Item {
+
     @Id
-    @GeneratedValue
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String itemName;
 
     private String itemDesc;
 
     private String itemImg;
-
-    private String itemRating;
 
     private int itemStock;
 
@@ -31,9 +35,21 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Cart> carts;
+
+    @OneToMany(mappedBy = "item",fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<ItemDetailImage> itemDetailImages = new ArrayList<>();
+
+    @Transient // 이 필드는 DB에 저장되지 않음
+    private Double averageRating;
+
+    @Transient // 이 필드는 DB에 저장되지 않음
+    private Integer commentCount;
 }

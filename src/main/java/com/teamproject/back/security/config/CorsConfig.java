@@ -16,16 +16,20 @@ public class CorsConfig {
     public static CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
+//        configuration.addAllowedOrigin("*");
+
         //리소스를 허용할 URL 지정
         ArrayList<String> allowedOriginPatterns = new ArrayList<>();
         allowedOriginPatterns.add("http://localhost:3000");
         allowedOriginPatterns.add("http://127.0.0.1:3000");
+//        allowedOriginPatterns.add("http://localhost:8080");
         configuration.setAllowedOrigins(allowedOriginPatterns);
 
         //허용하는 HTTP METHOD 지정
         ArrayList<String> allowedHttpMethods = new ArrayList<>();
         allowedHttpMethods.add("GET");
         allowedHttpMethods.add("POST");
+        allowedHttpMethods.add("PATCH");
         allowedHttpMethods.add("PUT");
         allowedHttpMethods.add("DELETE");
         configuration.setAllowedMethods(allowedHttpMethods);
